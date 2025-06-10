@@ -240,7 +240,7 @@ Extrahiere folgende Informationen als JSON:
 ## Next Steps
 
 1. ✅ MVP Spec finalisiert
-2. 🔄 .NET Backend Setup JETZT
+2. 🔄 .NET Backend Setup
 3. 🔄 Database Schema Implementation
 4. 🔄 EmailProcessor Development
 5. 🔄 AI Service Integration
