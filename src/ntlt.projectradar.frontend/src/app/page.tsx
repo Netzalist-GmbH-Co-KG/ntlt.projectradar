@@ -12,10 +12,9 @@ export default function HomePage() {
           </p>
           
           {/* Status Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mt-8">
-            <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
-              <div className="text-2xl font-bold text-primary-600 mb-2">
-                Layout ✅
+          <div className="grid md:grid-cols-3 gap-6 mt-8">            <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+              <div className="text-2xl font-semibold text-green-600 mb-2">
+                Layout ✓
               </div>
               <p className="text-neutral-600">
                 Basic app structure with Tailwind CSS
@@ -23,20 +22,19 @@ export default function HomePage() {
             </div>
             
             <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
-              <div className="text-2xl font-bold text-neutral-400 mb-2">
-                Navigation 🚧
+              <div className="text-2xl font-semibold text-green-600 mb-2">
+                Navigation ✓
               </div>
               <p className="text-neutral-600">
-                Coming in Step 2
+                Clean desktop header navigation
               </p>
             </div>
-            
-            <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
-              <div className="text-2xl font-bold text-neutral-400 mb-2">
-                Features 🚧
+              <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+              <div className="text-2xl font-semibold text-neutral-400 mb-2">
+                Pages
               </div>
               <p className="text-neutral-600">
-                Coming in later steps
+                Coming in Step 3
               </p>
             </div>
           </div>
@@ -47,25 +45,24 @@ export default function HomePage() {
           <h2 className="text-2xl font-semibold text-neutral-900 mb-6">
             Design System Preview
           </h2>
-          
-          {/* Color Palette */}
+            {/* Color Palette */}
           <div className="mb-8">
             <h3 className="text-lg font-medium text-neutral-700 mb-4">Colors</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="w-16 h-16 bg-primary-500 rounded-lg mx-auto mb-2"></div>
+                <div className="w-16 h-16 rounded-lg mx-auto mb-2" style={{backgroundColor: '#3b82f6'}}></div>
                 <p className="text-sm text-neutral-600">Primary</p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-secondary-500 rounded-lg mx-auto mb-2"></div>
+                <div className="w-16 h-16 rounded-lg mx-auto mb-2" style={{backgroundColor: '#10b981'}}></div>
                 <p className="text-sm text-neutral-600">Success</p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-accent-500 rounded-lg mx-auto mb-2"></div>
+                <div className="w-16 h-16 rounded-lg mx-auto mb-2" style={{backgroundColor: '#f59e0b'}}></div>
                 <p className="text-sm text-neutral-600">Warning</p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-neutral-500 rounded-lg mx-auto mb-2"></div>
+                <div className="w-16 h-16 rounded-lg mx-auto mb-2" style={{backgroundColor: '#6b7280'}}></div>
                 <p className="text-sm text-neutral-600">Neutral</p>
               </div>
             </div>
