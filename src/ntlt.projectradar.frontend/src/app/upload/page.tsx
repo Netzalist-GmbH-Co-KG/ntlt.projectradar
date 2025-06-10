@@ -99,12 +99,8 @@ export default function UploadPage() {
           uploadProgress: ((i + 1) / files.length) * 100,
           uploadResults: [...prev.uploadResults, `✓ ${file.name} processed successfully`]
         }));
-      }      // Complete upload
+      }      // Complete upload and reset to initial state
       setTimeout(() => {
-        setUploadState(prev => ({ 
-          ...prev, 
-          isUploading: false 
-        }));
         showSuccess(
           'Upload Complete!', 
           `Successfully processed ${files.length} file(s) and extracted ${files.length} project(s)`,
@@ -115,38 +111,43 @@ export default function UploadPage() {
             }
           }
         );
-      }, 500);    } catch (error) {
+        
+        // Reset to initial state after showing toast
+        setUploadState({
+          isUploading: false,
+          uploadProgress: 0,
+          isDragOver: false,
+          uploadedFiles: [],
+          uploadResults: [],
+          error: null,
+        });
+      }, 500);} catch (error) {
       setUploadState(prev => ({ 
         ...prev, 
         isUploading: false, 
         error: 'Failed to process files. Please try again.' 
       }));
-      setError('Upload failed');
-      showError(
+      setError('Upload failed');      showError(
         'Upload Failed', 
         'There was an error processing your files. Please try again.',
         {
           action: {
             label: 'Try Again',
-            onClick: resetUpload
+            onClick: () => setUploadState({
+              isUploading: false,
+              uploadProgress: 0,
+              isDragOver: false,
+              uploadedFiles: [],
+              uploadResults: [],
+              error: null,
+            })
           }
         }
       );
     }
   };
-
-  const resetUpload = () => {
-    setUploadState({
-      isUploading: false,
-      uploadProgress: 0,
-      isDragOver: false,
-      uploadedFiles: [],
-      uploadResults: [],
-      error: null,
-    });
-  };
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
       <div className="mb-6">
         <Breadcrumb />
@@ -160,11 +161,9 @@ export default function UploadPage() {
         <p className="text-lg text-neutral-600">
           Upload .eml files to automatically extract project opportunities
         </p>
-      </div>
-
-      {/* Upload Area */}
+      </div>      {/* Upload Area */}
       <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-8">
-        {!uploadState.isUploading && uploadState.uploadResults.length === 0 ? (
+        {!uploadState.isUploading ? (
           <div
             className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
               uploadState.isDragOver
@@ -204,7 +203,7 @@ export default function UploadPage() {
               </div>
             </div>
           </div>
-        ) : uploadState.isUploading ? (
+        ) : (
           /* Upload Progress */
           <div className="text-center">
             <div className="mb-6">
@@ -243,43 +242,6 @@ export default function UploadPage() {
               </div>
             )}
           </div>
-        ) : (
-          /* Upload Complete */
-          <div className="text-center">
-            <div className="text-4xl text-green-500 mb-4">✅</div>
-            <h3 className="text-lg font-medium text-neutral-900 mb-2">
-              Upload Complete!
-            </h3>
-            <p className="text-neutral-600 mb-6">
-              Successfully processed {uploadState.uploadedFiles.length} file(s)
-            </p>
-
-            <div className="bg-neutral-50 rounded-lg p-4 mb-6 text-left">
-              <h4 className="font-medium text-neutral-900 mb-2">Results:</h4>
-              <div className="space-y-1">
-                {uploadState.uploadResults.map((result, index) => (
-                  <div key={index} className="text-sm text-green-600">
-                    {result}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={resetUpload}
-                className="px-4 py-2 border border-neutral-300 text-neutral-700 rounded-md hover:bg-neutral-50 transition-colors"
-              >
-                Upload More Files
-              </button>
-              <a
-                href="/projects"
-                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
-              >
-                View Projects
-              </a>
-            </div>
-          </div>
         )}
 
         {/* Error State */}
@@ -291,9 +253,15 @@ export default function UploadPage() {
                 <h4 className="text-red-800 font-medium">Upload Error</h4>
                 <p className="text-red-600 text-sm">{uploadState.error}</p>
               </div>
-            </div>
-            <button
-              onClick={resetUpload}
+            </div>            <button
+              onClick={() => setUploadState({
+                isUploading: false,
+                uploadProgress: 0,
+                isDragOver: false,
+                uploadedFiles: [],
+                uploadResults: [],
+                error: null,
+              })}
               className="mt-3 px-3 py-1 text-sm bg-red-100 text-red-800 rounded hover:bg-red-200 transition-colors"
             >
               Try Again

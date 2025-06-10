@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useReducer, useCallback, useEffect, ReactNode } from 'react';
 
 // Types
 export interface Project {
@@ -98,6 +98,53 @@ interface AppProviderProps {
 
 export function AppProvider({ children }: AppProviderProps) {
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  // Load initial mock data on mount
+  useEffect(() => {
+    const loadInitialData = () => {
+      const mockProjects: Project[] = [
+        {
+          id: '1',
+          name: 'Website Redesign',
+          status: 'active',
+          description: 'Complete redesign of company website with modern UI/UX',
+          createdAt: '2024-01-15',
+          updatedAt: '2024-06-10',
+        },
+        {
+          id: '2',
+          name: 'Mobile App Development',
+          status: 'pending',
+          description: 'Native mobile application for iOS and Android',
+          createdAt: '2024-02-01',
+          updatedAt: '2024-06-08',
+        },
+        {
+          id: '3',
+          name: 'Database Migration',
+          status: 'completed',
+          description: 'Migration from legacy database to PostgreSQL',
+          createdAt: '2024-01-10',
+          updatedAt: '2024-05-30',
+        },
+        {
+          id: '4',
+          name: 'API Documentation',
+          status: 'archived',
+          description: 'Comprehensive API documentation for developers',
+          createdAt: '2024-01-05',
+          updatedAt: '2024-04-15',
+        },
+      ];
+
+      dispatch({ type: 'SET_PROJECTS', payload: mockProjects });
+    };
+
+    // Only load if projects array is empty
+    if (state.projects.length === 0) {
+      loadInitialData();
+    }
+  }, [state.projects.length]);
 
   // Helper functions with useCallback to prevent unnecessary re-renders
   const setLoading = useCallback((loading: boolean) => {

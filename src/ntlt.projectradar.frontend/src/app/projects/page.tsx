@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useState } from 'react';
+import Link from 'next/link';
 import { useApp } from '../../contexts/AppContext';
 import { useToast } from '../../contexts/ToastContext';
 import { Breadcrumb } from '../../components/Navigation/Breadcrumb';
@@ -8,69 +9,9 @@ import { LoadingCard } from '../../components/Loading/LoadingComponents';
 import { ErrorMessage } from '../../components/Error/ErrorComponents';
 
 export default function ProjectsPage() {
-  const { state, setLoading, addProject, setError } = useApp();
+  const { state } = useApp();
   const { projects, isLoading, error } = state;
   const [filter, setFilter] = useState('all');
-  const hasInitializedRef = useRef(false);
-
-  const loadMockData = () => {
-    setError(null);
-    setLoading(true);
-    
-    // Simulate API call with potential error
-    setTimeout(() => {
-      try {
-        const mockProjects = [
-          {
-            id: '1',
-            name: 'Website Redesign',
-            status: 'active' as const,
-            description: 'Complete redesign of company website with modern UI/UX',
-            createdAt: '2024-01-15',
-            updatedAt: '2024-06-10',
-          },
-          {
-            id: '2',
-            name: 'Mobile App Development',
-            status: 'pending' as const,
-            description: 'Native mobile application for iOS and Android',
-            createdAt: '2024-02-01',
-            updatedAt: '2024-06-08',
-          },
-          {
-            id: '3',
-            name: 'Database Migration',
-            status: 'completed' as const,
-            description: 'Migration from legacy database to PostgreSQL',
-            createdAt: '2024-01-10',
-            updatedAt: '2024-05-30',
-          },
-          {
-            id: '4',
-            name: 'API Documentation',
-            status: 'archived' as const,
-            description: 'Comprehensive API documentation and guides',
-            createdAt: '2024-03-15',
-            updatedAt: '2024-04-20',
-          },
-        ];
-
-        mockProjects.forEach(project => addProject(project));
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to load projects');
-        setLoading(false);
-      }
-    }, 1000);
-  };
-
-  useEffect(() => {
-    // Load mock data if no projects exist and not already initialized
-    if (projects.length === 0 && !hasInitializedRef.current) {
-      hasInitializedRef.current = true;
-      loadMockData();
-    }
-  }, []); // Empty dependency array!
 
   const filteredProjects = filter === 'all' 
     ? projects 
@@ -194,14 +135,13 @@ export default function ProjectsPage() {
                   <p><span className="font-medium">Created:</span> {project.createdAt}</p>
                   <p><span className="font-medium">Last Updated:</span> {project.updatedAt}</p>
                 </div>
-              </div>
-                <div className="flex space-x-2">
-                <a 
+              </div>                <div className="flex space-x-2">
+                <Link 
                   href={`/projects/${project.id}`}
                   className="px-3 py-1 text-sm border border-neutral-300 rounded-md hover:bg-neutral-50 transition-colors"
                 >
                   View Details
-                </a>
+                </Link>
                 <button className="px-3 py-1 text-sm bg-neutral-900 text-white rounded-md hover:bg-neutral-800 transition-colors">
                   Edit
                 </button>
@@ -225,10 +165,9 @@ export default function ProjectsPage() {
         <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-12 text-center">
           <div className="text-4xl text-neutral-400 mb-4">📋</div>
           <h3 className="text-lg font-medium text-neutral-900 mb-2">No projects yet</h3>
-          <p className="text-neutral-600 mb-4">Upload your first .eml file to get started</p>
-          <a href="/upload" className="px-4 py-2 bg-neutral-900 text-white rounded-md hover:bg-neutral-800 transition-colors">
+          <p className="text-neutral-600 mb-4">Upload your first .eml file to get started</p>          <Link href="/upload" className="px-4 py-2 bg-neutral-900 text-white rounded-md hover:bg-neutral-800 transition-colors">
             Upload Email
-          </a>
+          </Link>
         </div>
       )}
     </div>
