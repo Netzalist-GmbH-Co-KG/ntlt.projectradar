@@ -1,100 +1,174 @@
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
-}
+'use client';
 
-async function getWeatherData(): Promise<WeatherForecast[]> {
-  try {
-    // Priority order for backend URL:
-    // 1. Explicit BACKEND_URL environment variable (for standalone mode)
-    // 2. Aspire service discovery URLs
-    // 3. Default fallback
-    const backendUrl = 
-      process.env.BACKEND_URL || 
-      process.env.services__backend__http__0 || 
-      process.env.services__backend__https__0 ||
-      'http://localhost:5100';
-    
-    console.log('Using backend URL:', backendUrl);
+import { useApp } from '../contexts/AppContext';
+import { ToastDemo } from '../components/Toast/ToastComponents';
+import { BreadcrumbDemo } from '../components/Navigation/Breadcrumb';
 
-    const response = await fetch(`${backendUrl}/WeatherForecast`, {
-      cache: 'no-store' // Don't cache for demo purposes
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching weather data:', error);
-    return [];
-  }
-}
-
-export default async function Home() {
-  const weatherData = await getWeatherData();
+export default function HomePage() {
+  const { state } = useApp();
+  const { projects } = state;
 
   return (
-    <div className="min-h-screen p-8">
-      <h1 className="text-2xl font-bold mb-4">Project Radar - MVP Test</h1>
-      
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">Weather Service Test</h2>
-        {weatherData.length > 0 ? (
-          <div>
-            <p className="mb-4 text-green-600">✅ Backend connection successful!</p>
-            <table className="border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 px-4 py-2">Date</th>
-                  <th className="border border-gray-300 px-4 py-2">Temp (°C)</th>
-                  <th className="border border-gray-300 px-4 py-2">Temp (°F)</th>
-                  <th className="border border-gray-300 px-4 py-2">Summary</th>
-                </tr>
-              </thead>
-              <tbody>
-                {weatherData.map((forecast, index) => (
-                  <tr key={index}>
-                    <td className="border border-gray-300 px-4 py-2">{forecast.date}</td>
-                    <td className="border border-gray-300 px-4 py-2">{forecast.temperatureC}</td>
-                    <td className="border border-gray-300 px-4 py-2">{forecast.temperatureF}</td>
-                    <td className="border border-gray-300 px-4 py-2">{forecast.summary}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div>
-            <p className="text-red-600">❌ Backend connection failed</p>
-            <p className="text-sm text-gray-600 mt-2">
-              Trying backend URL: {
-                process.env.BACKEND_URL || 
-                process.env.services__backend__http__0 || 
-                process.env.services__backend__https__0 ||
-                'http://localhost:5100'
-              }
+    <div className="min-h-screen bg-neutral-50">
+      {/* Hero Section */}
+      <section className="bg-white border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-neutral-900 mb-4">
+              Project Radar
+            </h1>
+            <p className="text-xl text-neutral-600 mb-8 max-w-2xl mx-auto">
+              AI-powered project acquisition system for systematic lead management and opportunity tracking
             </p>
           </div>
-        )}
-      </div>
+        </div>
+      </section>
 
-      <div className="mt-8 p-4 bg-gray-100 rounded">
-        <h3 className="font-semibold mb-2">Debug Info:</h3>
-        <p className="text-sm">Explicit Backend URL: {process.env.BACKEND_URL || 'Not set'}</p>
-        <p className="text-sm">Aspire HTTP URL: {process.env.services__backend__http__0 || 'Not set'}</p>
-        <p className="text-sm">Aspire HTTPS URL: {process.env.services__backend__https__0 || 'Not set'}</p>
-        <p className="text-sm">Fallback URL: http://localhost:5000</p>
-        <p className="text-sm font-semibold">Used URL: {
-          process.env.BACKEND_URL || 
-          process.env.services__backend__http__0 || 
-          process.env.services__backend__https__0 ||
-          'http://localhost:5100'
-        }</p>
-      </div>
+      {/* Features Section */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center text-neutral-900 mb-12">
+            Key Features
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="text-4xl mb-4">📧</div>
+              <h3 className="text-xl font-semibold text-neutral-900 mb-3">
+                Email Processing
+              </h3>
+              <p className="text-neutral-600">
+                Automatically extract project opportunities from .eml email files using AI
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-4xl mb-4">📊</div>
+              <h3 className="text-xl font-semibold text-neutral-900 mb-3">
+                Project Management
+              </h3>
+              <p className="text-neutral-600">
+                Organize and track all extracted projects with status management and filtering
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-4xl mb-4">🔍</div>
+              <h3 className="text-xl font-semibold text-neutral-900 mb-3">
+                Advanced Search
+              </h3>
+              <p className="text-neutral-600">
+                Powerful search capabilities to find specific projects and opportunities
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>      {/* Toast Demo Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-neutral-900 mb-4">
+              UI Components Demo
+            </h2>
+            <p className="text-lg text-neutral-600">
+              Test the notification and navigation systems
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <ToastDemo />
+            <BreadcrumbDemo />
+          </div>
+        </div>
+      </section>
+
+      {/* Design System Preview */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center text-neutral-900 mb-12">
+            Design System
+          </h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Primary Colors */}
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-neutral-900 mb-4">Primary</h3>
+              <div className="space-y-2">
+                <div 
+                  className="h-16 rounded-lg border border-neutral-200"
+                  style={{ backgroundColor: '#3b82f6' }}
+                />
+                <p className="text-sm text-neutral-600">#3b82f6</p>
+              </div>
+            </div>
+            
+            {/* Success Colors */}
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-neutral-900 mb-4">Success</h3>
+              <div className="space-y-2">
+                <div 
+                  className="h-16 rounded-lg border border-neutral-200"
+                  style={{ backgroundColor: '#10b981' }}
+                />
+                <p className="text-sm text-neutral-600">#10b981</p>
+              </div>
+            </div>
+            
+            {/* Warning Colors */}
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-neutral-900 mb-4">Warning</h3>
+              <div className="space-y-2">
+                <div 
+                  className="h-16 rounded-lg border border-neutral-200"
+                  style={{ backgroundColor: '#f59e0b' }}
+                />
+                <p className="text-sm text-neutral-600">#f59e0b</p>
+              </div>
+            </div>
+            
+            {/* Neutral Colors */}
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-neutral-900 mb-4">Neutral</h3>
+              <div className="space-y-2">
+                <div 
+                  className="h-16 rounded-lg border border-neutral-200"
+                  style={{ backgroundColor: '#6b7280' }}
+                />
+                <p className="text-sm text-neutral-600">#6b7280</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Status Cards */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center text-neutral-900 mb-12">
+            System Status
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+              <div className="text-2xl text-green-600 mb-2">✅</div>
+              <h3 className="text-lg font-semibold text-green-900 mb-1">Frontend</h3>
+              <p className="text-green-700">Online</p>
+            </div>
+            
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+              <div className="text-2xl text-green-600 mb-2">✅</div>
+              <h3 className="text-lg font-semibold text-green-900 mb-1">Backend</h3>
+              <p className="text-green-700">Online</p>
+            </div>
+            
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+              <div className="text-2xl text-yellow-600 mb-2">⚠️</div>
+              <h3 className="text-lg font-semibold text-yellow-900 mb-1">AI Processing</h3>
+              <p className="text-yellow-700">Development</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
