@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "../components/Navigation/Header";
 import Footer from "../components/Navigation/Footer";
+import { AppProvider } from "../contexts/AppContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,13 +24,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="app-layout bg-neutral-50 text-neutral-900 antialiased min-h-screen flex flex-col">
-        <Header className="sticky top-0 z-30" />
-        
-        <main className="main-content flex-1">
-          {children}
-        </main>
+        <AppProvider>
+          <Header className="sticky top-0 z-30" />
+          
+          <main className="main-content flex-1">
+            {children}
+          </main>
 
-        <Footer className="sticky bottom-0 z-30" />
+          <Footer className="sticky bottom-0 z-30" />
+        </AppProvider>
       </body>
     </html>
   );
