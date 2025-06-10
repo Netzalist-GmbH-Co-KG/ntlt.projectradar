@@ -22,14 +22,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="app-layout bg-neutral-50 text-neutral-900 antialiased">
-        <Header />
+      <body className="app-layout bg-neutral-50 text-neutral-900 antialiased min-h-screen flex flex-col">
+        <Header className="sticky top-0 z-30" />
         
         <main className="main-content flex-1">
           {children}
         </main>
 
-        <Footer />
+        <Footer className="sticky bottom-0 z-30" />
       </body>
     </html>
   );
