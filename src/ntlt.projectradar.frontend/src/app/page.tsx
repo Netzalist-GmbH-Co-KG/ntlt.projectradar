@@ -1,99 +1,87 @@
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
-}
-
-async function getWeatherData(): Promise<WeatherForecast[]> {
-  try {
-    // Priority order for backend URL:
-    // 1. Explicit BACKEND_URL environment variable (for standalone mode)
-    // 2. Aspire service discovery URLs
-    // 3. Default fallback
-    const backendUrl = 
-      process.env.BACKEND_URL || 
-      process.env.services__backend__http__0 || 
-      process.env.services__backend__https__0 ||
-      'http://localhost:5100';
-    
-    console.log('Using backend URL:', backendUrl);
-
-    const response = await fetch(`${backendUrl}/WeatherForecast`, {
-      cache: 'no-store' // Don't cache for demo purposes
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching weather data:', error);
-    return [];
-  }
-}
-
-export default async function Home() {
-  const weatherData = await getWeatherData();
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen p-8">
-      <h1 className="text-2xl font-bold mb-4">Project Radar - MVP Test</h1>
-      
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">Weather Service Test</h2>
-        {weatherData.length > 0 ? (
-          <div>
-            <p className="mb-4 text-green-600">✅ Backend connection successful!</p>
-            <table className="border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 px-4 py-2">Date</th>
-                  <th className="border border-gray-300 px-4 py-2">Temp (°C)</th>
-                  <th className="border border-gray-300 px-4 py-2">Temp (°F)</th>
-                  <th className="border border-gray-300 px-4 py-2">Summary</th>
-                </tr>
-              </thead>
-              <tbody>
-                {weatherData.map((forecast, index) => (
-                  <tr key={index}>
-                    <td className="border border-gray-300 px-4 py-2">{forecast.date}</td>
-                    <td className="border border-gray-300 px-4 py-2">{forecast.temperatureC}</td>
-                    <td className="border border-gray-300 px-4 py-2">{forecast.temperatureF}</td>
-                    <td className="border border-gray-300 px-4 py-2">{forecast.summary}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-neutral-900 mb-4">
+            Welcome to Project Radar
+          </h1>
+          <p className="text-xl text-neutral-600 mb-8">
+            AI-powered project acquisition system for systematic lead management
+          </p>
+          
+          {/* Status Cards */}
+          <div className="grid md:grid-cols-3 gap-6 mt-8">
+            <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+              <div className="text-2xl font-bold text-primary-600 mb-2">
+                Layout ✅
+              </div>
+              <p className="text-neutral-600">
+                Basic app structure with Tailwind CSS
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+              <div className="text-2xl font-bold text-neutral-400 mb-2">
+                Navigation 🚧
+              </div>
+              <p className="text-neutral-600">
+                Coming in Step 2
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+              <div className="text-2xl font-bold text-neutral-400 mb-2">
+                Features 🚧
+              </div>
+              <p className="text-neutral-600">
+                Coming in later steps
+              </p>
+            </div>
           </div>
-        ) : (
-          <div>
-            <p className="text-red-600">❌ Backend connection failed</p>
-            <p className="text-sm text-gray-600 mt-2">
-              Trying backend URL: {
-                process.env.BACKEND_URL || 
-                process.env.services__backend__http__0 || 
-                process.env.services__backend__https__0 ||
-                'http://localhost:5100'
-              }
-            </p>
-          </div>
-        )}
-      </div>
+        </div>
 
-      <div className="mt-8 p-4 bg-gray-100 rounded">
-        <h3 className="font-semibold mb-2">Debug Info:</h3>
-        <p className="text-sm">Explicit Backend URL: {process.env.BACKEND_URL || 'Not set'}</p>
-        <p className="text-sm">Aspire HTTP URL: {process.env.services__backend__http__0 || 'Not set'}</p>
-        <p className="text-sm">Aspire HTTPS URL: {process.env.services__backend__https__0 || 'Not set'}</p>
-        <p className="text-sm">Fallback URL: http://localhost:5000</p>
-        <p className="text-sm font-semibold">Used URL: {
-          process.env.BACKEND_URL || 
-          process.env.services__backend__http__0 || 
-          process.env.services__backend__https__0 ||
-          'http://localhost:5100'
-        }</p>
+        {/* Design System Preview */}
+        <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-8">
+          <h2 className="text-2xl font-semibold text-neutral-900 mb-6">
+            Design System Preview
+          </h2>
+          
+          {/* Color Palette */}
+          <div className="mb-8">
+            <h3 className="text-lg font-medium text-neutral-700 mb-4">Colors</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-primary-500 rounded-lg mx-auto mb-2"></div>
+                <p className="text-sm text-neutral-600">Primary</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-secondary-500 rounded-lg mx-auto mb-2"></div>
+                <p className="text-sm text-neutral-600">Success</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-accent-500 rounded-lg mx-auto mb-2"></div>
+                <p className="text-sm text-neutral-600">Warning</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-neutral-500 rounded-lg mx-auto mb-2"></div>
+                <p className="text-sm text-neutral-600">Neutral</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Typography */}
+          <div>
+            <h3 className="text-lg font-medium text-neutral-700 mb-4">Typography</h3>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold text-neutral-900">Heading 1 - Inter Bold</h1>
+              <h2 className="text-2xl font-semibold text-neutral-800">Heading 2 - Inter Semibold</h2>
+              <p className="text-base text-neutral-700">Body text - Inter Regular</p>
+              <p className="text-sm text-neutral-600">Small text - Inter Regular</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

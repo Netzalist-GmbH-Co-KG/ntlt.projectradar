@@ -8,6 +8,11 @@ applyTo: '**'
   like `dotnet new` or `npm create`, or `dotnet add package`.
 - Die CLI ist Powershell. Bitte bei der Syntax beachten (z.B. kein `&&` verwenden, sondern `;` für mehrere Befehle in einer Zeile).
 
+# Base Information
+
+The project spec is in .doc/project_acquisition_system_spec.md
+The spec for the MVP is in .doc/mvp_specification.md
+
 ## GitHub Repository Information
 
 - **Organization:** Netzalist-GmbH-Co-KG
