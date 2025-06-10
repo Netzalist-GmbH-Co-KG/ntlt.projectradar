@@ -66,7 +66,6 @@ export default function ProjectsPage() {
         <ErrorMessage
           title="Failed to load projects"
           message={error}
-          retry={loadMockData}
         />
       </div>
     );
