@@ -26,14 +26,12 @@ try
 
     // Add Services
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
-    builder.Services.AddTransient<IGuidService, GuidService>();
-
-    // Add CORS for local development
+    builder.Services.AddTransient<IGuidService, GuidService>(); 
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowLocalhost", policy =>
+        options.AddPolicy("AllowAll", policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+            policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -48,20 +46,11 @@ try
     // Add Serilog request logging
     app.UseSerilogRequestLogging();
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-        
-        // Enable CORS in development
-        app.UseCors("AllowLocalhost");
-    }
-    else
-    {
-        // Only use HTTPS redirection in production
-        app.UseHttpsRedirection();
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    
+    // Enable CORS in development
+    app.UseCors("AllowAll");
 
     app.UseAuthorization();
 
