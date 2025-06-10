@@ -28,13 +28,12 @@ export default function HomePage() {
               <p className="text-neutral-600">
                 Clean desktop header navigation
               </p>
-            </div>
-              <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
-              <div className="text-2xl font-semibold text-neutral-400 mb-2">
-                Pages
+            </div>            <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
+              <div className="text-2xl font-semibold text-green-600 mb-2">
+                Pages ✓
               </div>
               <p className="text-neutral-600">
-                Coming in Step 3
+                Basic pages with Next.js App Router
               </p>
             </div>
           </div>

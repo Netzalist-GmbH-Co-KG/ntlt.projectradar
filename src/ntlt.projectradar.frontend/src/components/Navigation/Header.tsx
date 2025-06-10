@@ -1,16 +1,28 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+
 interface HeaderProps {
-  // Future: currentPath for active navigation state
   className?: string;
 }
 
-export default function Header({ className = '' }: HeaderProps) {  const navigationItems = [
+export default function Header({ className = '' }: HeaderProps) {
+  const pathname = usePathname();
+  
+  const navigationItems = [
     { name: 'Home', href: '/' },
     { name: 'Upload', href: '/upload' },
     { name: 'Projects', href: '/projects' },
     { name: 'Search', href: '/search' },
   ];
+
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <header className={`h-16 bg-white border-b border-neutral-200 shadow-sm ${className}`}>
@@ -24,13 +36,17 @@ export default function Header({ className = '' }: HeaderProps) {  const navigat
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">            {navigationItems.map((item) => (
-              <a
+              <Link
                 key={item.name}
                 href={item.href}
-                className="px-3 py-2 rounded-md text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100 transition-colors duration-200"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  isActive(item.href)
+                    ? 'text-neutral-900 bg-neutral-100'
+                    : 'text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100'
+                }`}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </nav>
 
