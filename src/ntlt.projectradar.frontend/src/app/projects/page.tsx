@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { useToast } from '../../contexts/ToastContext';
+import { Breadcrumb } from '../../components/Navigation/Breadcrumb';
 import { LoadingCard } from '../../components/Loading/LoadingComponents';
 import { ErrorMessage } from '../../components/Error/ErrorComponents';
 
@@ -129,9 +130,13 @@ export default function ProjectsPage() {
       </div>
     );
   }
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Breadcrumb */}
+      <div className="mb-6">
+        <Breadcrumb />
+      </div>
+
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-neutral-900 mb-2">
@@ -190,11 +195,13 @@ export default function ProjectsPage() {
                   <p><span className="font-medium">Last Updated:</span> {project.updatedAt}</p>
                 </div>
               </div>
-              
-              <div className="flex space-x-2">
-                <button className="px-3 py-1 text-sm border border-neutral-300 rounded-md hover:bg-neutral-50 transition-colors">
+                <div className="flex space-x-2">
+                <a 
+                  href={`/projects/${project.id}`}
+                  className="px-3 py-1 text-sm border border-neutral-300 rounded-md hover:bg-neutral-50 transition-colors"
+                >
                   View Details
-                </button>
+                </a>
                 <button className="px-3 py-1 text-sm bg-neutral-900 text-white rounded-md hover:bg-neutral-800 transition-colors">
                   Edit
                 </button>

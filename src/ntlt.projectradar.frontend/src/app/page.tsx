@@ -2,6 +2,7 @@
 
 import { useApp } from '../contexts/AppContext';
 import { ToastDemo } from '../components/Toast/ToastComponents';
+import { BreadcrumbDemo } from '../components/Navigation/Breadcrumb';
 
 export default function HomePage() {
   const { state } = useApp();
@@ -62,22 +63,21 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Toast Demo Section */}
+      </section>      {/* Toast Demo Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-neutral-900 mb-4">
-              Toast Notifications Demo
+              UI Components Demo
             </h2>
             <p className="text-lg text-neutral-600">
-              Test the toast notification system
+              Test the notification and navigation systems
             </p>
           </div>
           
-          <div className="max-w-md mx-auto">
+          <div className="grid md:grid-cols-2 gap-8">
             <ToastDemo />
+            <BreadcrumbDemo />
           </div>
         </div>
       </section>

@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import { useToast } from '../../contexts/ToastContext';
 import { LoadingSpinner } from '../../components/Loading/LoadingComponents';
+import { Breadcrumb } from '../../components/Navigation/Breadcrumb';
 
 interface UploadState {
   isUploading: boolean;
@@ -144,9 +145,13 @@ export default function UploadPage() {
       error: null,
     });
   };
-
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Breadcrumb */}
+      <div className="mb-6">
+        <Breadcrumb />
+      </div>
+
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-neutral-900 mb-2">

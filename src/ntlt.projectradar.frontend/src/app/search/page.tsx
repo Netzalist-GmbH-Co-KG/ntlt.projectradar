@@ -1,7 +1,16 @@
+'use client';
+
+import { Breadcrumb } from '../../components/Navigation/Breadcrumb';
+
 export default function SearchPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
+        {/* Breadcrumb */}
+        <div className="mb-6">
+          <Breadcrumb />
+        </div>
+
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-neutral-900 mb-2">
