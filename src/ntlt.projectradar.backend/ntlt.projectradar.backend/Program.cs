@@ -1,4 +1,8 @@
 using Serilog;
+using Microsoft.EntityFrameworkCore;
+using ntlt.projectradar.backend.Common;
+using ntlt.projectradar.backend.Data;
+using ntlt.projectradar.backend.Services;
 
 // Configure Serilog from appsettings.json
 Log.Logger = new LoggerConfiguration()
@@ -15,17 +19,19 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // Replace built-in logging with Serilog
-    builder.Host.UseSerilog();
+    builder.Host.UseSerilog();    // Add services to the container.
+    builder.Services.AddControllers();    // Add Entity Framework and SQLite
+    builder.Services.AddDbContext<ProjectRadarContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-    // Add services to the container.
-    builder.Services.AddControllers();
-
-    // Add CORS for local development
+    // Add Services
+    builder.Services.AddScoped<IRawLeadService, RawLeadService>();
+    builder.Services.AddTransient<IGuidService, GuidService>(); 
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowLocalhost", policy =>
+        options.AddPolicy("AllowAll", policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+            policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -40,20 +46,11 @@ try
     // Add Serilog request logging
     app.UseSerilogRequestLogging();
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-        
-        // Enable CORS in development
-        app.UseCors("AllowLocalhost");
-    }
-    else
-    {
-        // Only use HTTPS redirection in production
-        app.UseHttpsRedirection();
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    
+    // Enable CORS in development
+    app.UseCors("AllowAll");
 
     app.UseAuthorization();
 
