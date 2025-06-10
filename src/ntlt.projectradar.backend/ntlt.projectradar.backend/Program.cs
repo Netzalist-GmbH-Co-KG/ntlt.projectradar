@@ -1,42 +1,72 @@
-var builder = WebApplication.CreateBuilder(args);
+using Serilog;
 
-// Add services to the container.
-builder.Services.AddControllers();
+// Configure Serilog from appsettings.json
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+        .Build())
+    .CreateLogger();
 
-// Add CORS for local development
-builder.Services.AddCors(options =>
+try
 {
-    options.AddPolicy("AllowLocalhost", policy =>
+    Log.Information("Starting ProjectRadar Backend");
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Replace built-in logging with Serilog
+    builder.Host.UseSerilog();
+
+    // Add services to the container.
+    builder.Services.AddControllers();
+
+    // Add CORS for local development
+    builder.Services.AddCors(options =>
     {
-        policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        options.AddPolicy("AllowLocalhost", policy =>
+        {
+            policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
     });
-});
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+    var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    
-    // Enable CORS in development
-    app.UseCors("AllowLocalhost");
+    // Add Serilog request logging
+    app.UseSerilogRequestLogging();
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        
+        // Enable CORS in development
+        app.UseCors("AllowLocalhost");
+    }
+    else
+    {
+        // Only use HTTPS redirection in production
+        app.UseHttpsRedirection();
+    }
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    Log.Information("ProjectRadar Backend started successfully");
+    app.Run();
 }
-else
+catch (Exception ex)
 {
-    // Only use HTTPS redirection in production
-    app.UseHttpsRedirection();
+    Log.Fatal(ex, "ProjectRadar Backend failed to start");
 }
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+finally
+{
+    Log.CloseAndFlush();
+}

@@ -16,17 +16,21 @@ public class WeatherForecastController : ControllerBase
     public WeatherForecastController(ILogger<WeatherForecastController> logger)
     {
         _logger = logger;
-    }
-
-    [HttpGet(Name = "GetWeatherForecast")]
+    }    [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        _logger.LogInformation("Weather forecast request received");
+        
+        var forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+
+        _logger.LogDebug("Generated {ForecastCount} weather forecasts", forecasts.Length);
+        
+        return forecasts;
     }
 }

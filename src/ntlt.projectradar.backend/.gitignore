@@ -66,3 +66,7 @@ ehthumbs.db
 # local secrets
 .env
 *.local
+
+# log files
+*.log
+logs/
