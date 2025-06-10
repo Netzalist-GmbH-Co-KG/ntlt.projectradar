@@ -2,21 +2,22 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useApp } from '../../contexts/AppContext';
+import { LoadingCard } from '../../components/Loading/LoadingComponents';
+import { ErrorMessage } from '../../components/Error/ErrorComponents';
 
 export default function ProjectsPage() {
-  const { state, setLoading, addProject } = useApp();
-  const { projects, isLoading } = state;
+  const { state, setLoading, addProject, setError } = useApp();
+  const { projects, isLoading, error } = state;
   const [filter, setFilter] = useState('all');
   const hasInitializedRef = useRef(false);
 
-  useEffect(() => {
-    // Load mock data if no projects exist and not already initialized
-    if (projects.length === 0 && !hasInitializedRef.current) {
-      hasInitializedRef.current = true;
-      setLoading(true);
-      
-      // Simulate API call
-      setTimeout(() => {
+  const loadMockData = () => {
+    setError(null);
+    setLoading(true);
+    
+    // Simulate API call with potential error
+    setTimeout(() => {
+      try {
         const mockProjects = [
           {
             id: '1',
@@ -54,7 +55,18 @@ export default function ProjectsPage() {
 
         mockProjects.forEach(project => addProject(project));
         setLoading(false);
-      }, 1000);
+      } catch (err) {
+        setError('Failed to load projects');
+        setLoading(false);
+      }
+    }, 1000);
+  };
+
+  useEffect(() => {
+    // Load mock data if no projects exist and not already initialized
+    if (projects.length === 0 && !hasInitializedRef.current) {
+      hasInitializedRef.current = true;
+      loadMockData();
     }
   }, []); // Empty dependency array!
 
@@ -76,13 +88,43 @@ export default function ProjectsPage() {
         return 'text-gray-600 bg-gray-100';
     }
   };
-
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg text-neutral-600">Loading projects...</div>
+        {/* Page Header Skeleton */}
+        <div className="mb-8">
+          <div className="h-8 bg-neutral-200 rounded w-64 mb-2 animate-pulse" />
+          <div className="h-5 bg-neutral-200 rounded w-96 animate-pulse" />
         </div>
+
+        {/* Filter Bar Skeleton */}
+        <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-4 mb-6">
+          <div className="h-8 bg-neutral-200 rounded w-32 animate-pulse" />
+        </div>
+
+        {/* Loading Cards */}
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <LoadingCard key={index} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-neutral-900 mb-2">
+            Projects Overview
+          </h1>
+        </div>
+        <ErrorMessage
+          title="Failed to load projects"
+          message={error}
+          retry={loadMockData}
+        />
       </div>
     );
   }
