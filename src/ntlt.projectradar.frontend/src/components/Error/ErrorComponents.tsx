@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface ErrorMessageProps {
   title?: string;
   message: string;
@@ -66,12 +68,12 @@ export function ErrorPage({
             </button>
           )}
           {goHome && (
-            <a
+            <Link
               href="/"
               className="px-6 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors text-center"
             >
               Go Home
-            </a>
+            </Link>
           )}
         </div>
       </div>

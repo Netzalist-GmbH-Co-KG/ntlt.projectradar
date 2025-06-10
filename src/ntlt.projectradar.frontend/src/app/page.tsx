@@ -5,8 +5,7 @@ import { ToastDemo } from '../components/Toast/ToastComponents';
 import { BreadcrumbDemo } from '../components/Navigation/Breadcrumb';
 
 export default function HomePage() {
-  const { state } = useApp();
-  const { projects } = state;
+  useApp();
 
   return (
     <div className="min-h-screen bg-neutral-50">

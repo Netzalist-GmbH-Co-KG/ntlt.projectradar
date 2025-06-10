@@ -1,5 +1,6 @@
 using Serilog;
 using Microsoft.EntityFrameworkCore;
+using ntlt.projectradar.backend.Common;
 using ntlt.projectradar.backend.Data;
 using ntlt.projectradar.backend.Services;
 
@@ -25,6 +26,7 @@ try
 
     // Add Services
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
+    builder.Services.AddTransient<IGuidService, GuidService>();
 
     // Add CORS for local development
     builder.Services.AddCors(options =>

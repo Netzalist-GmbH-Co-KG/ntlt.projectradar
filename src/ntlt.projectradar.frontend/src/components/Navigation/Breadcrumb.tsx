@@ -135,7 +135,6 @@ export function PageBreadcrumb({
   showTitle = true, 
   className = '' 
 }: PageBreadcrumbProps) {
-  const pathname = usePathname();
   
   return (
     <div className={`space-y-2 ${className}`}>
