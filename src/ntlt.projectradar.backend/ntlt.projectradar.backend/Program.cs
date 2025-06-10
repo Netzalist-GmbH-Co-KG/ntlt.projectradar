@@ -1,4 +1,7 @@
 using Serilog;
+using Microsoft.EntityFrameworkCore;
+using ntlt.projectradar.backend.Data;
+using ntlt.projectradar.backend.Services;
 
 // Configure Serilog from appsettings.json
 Log.Logger = new LoggerConfiguration()
@@ -15,10 +18,13 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // Replace built-in logging with Serilog
-    builder.Host.UseSerilog();
+    builder.Host.UseSerilog();    // Add services to the container.
+    builder.Services.AddControllers();    // Add Entity Framework and SQLite
+    builder.Services.AddDbContext<ProjectRadarContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-    // Add services to the container.
-    builder.Services.AddControllers();
+    // Add Services
+    builder.Services.AddScoped<IRawLeadService, RawLeadService>();
 
     // Add CORS for local development
     builder.Services.AddCors(options =>

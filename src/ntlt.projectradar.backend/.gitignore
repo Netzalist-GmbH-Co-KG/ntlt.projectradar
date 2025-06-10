@@ -70,3 +70,4 @@ ehthumbs.db
 # log files
 *.log
 logs/
+*.db
