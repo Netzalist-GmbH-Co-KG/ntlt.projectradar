@@ -1,0 +1,6 @@
+@ntlt.projectradar.backend_HostAddress = http://localhost:5018
+
+GET {{ntlt.projectradar.backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
