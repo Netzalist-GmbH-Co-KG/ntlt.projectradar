@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useApp } from '../../contexts/AppContext';
+import { useToast } from '../../contexts/ToastContext';
 import { LoadingSpinner } from '../../components/Loading/LoadingComponents';
 
 interface UploadState {
@@ -15,6 +16,7 @@ interface UploadState {
 
 export default function UploadPage() {
   const { addProject, setError } = useApp();
+  const { showSuccess, showError, showWarning, showInfo } = useToast();
   const [uploadState, setUploadState] = useState<UploadState>({
     isUploading: false,
     uploadProgress: 0,
@@ -41,14 +43,14 @@ export default function UploadPage() {
     const files = Array.from(e.dataTransfer.files).filter(
       file => file.name.endsWith('.eml')
     );
-    
-    if (files.length > 0) {
+      if (files.length > 0) {
       processFiles(files);
     } else {
       setUploadState(prev => ({ 
         ...prev, 
         error: 'Please upload only .eml files' 
       }));
+      showError('Invalid File Type', 'Please upload only .eml files');
     }
   }, []);
 
@@ -96,23 +98,39 @@ export default function UploadPage() {
           uploadProgress: ((i + 1) / files.length) * 100,
           uploadResults: [...prev.uploadResults, `✓ ${file.name} processed successfully`]
         }));
-      }
-
-      // Complete upload
+      }      // Complete upload
       setTimeout(() => {
         setUploadState(prev => ({ 
           ...prev, 
           isUploading: false 
         }));
-      }, 500);
-
-    } catch (error) {
+        showSuccess(
+          'Upload Complete!', 
+          `Successfully processed ${files.length} file(s) and extracted ${files.length} project(s)`,
+          {
+            action: {
+              label: 'View Projects',
+              onClick: () => window.location.href = '/projects'
+            }
+          }
+        );
+      }, 500);    } catch (error) {
       setUploadState(prev => ({ 
         ...prev, 
         isUploading: false, 
         error: 'Failed to process files. Please try again.' 
       }));
       setError('Upload failed');
+      showError(
+        'Upload Failed', 
+        'There was an error processing your files. Please try again.',
+        {
+          action: {
+            label: 'Try Again',
+            onClick: resetUpload
+          }
+        }
+      );
     }
   };
 
