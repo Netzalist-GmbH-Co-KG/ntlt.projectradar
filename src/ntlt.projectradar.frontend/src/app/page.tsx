@@ -7,13 +7,17 @@ interface WeatherForecast {
 
 async function getWeatherData(): Promise<WeatherForecast[]> {
   try {
-    // Aspire provides the backend URL via environment variable
-    const backendUrl = process.env.services__backend__http__0 || process.env.services__backend__https__0;
+    // Priority order for backend URL:
+    // 1. Explicit BACKEND_URL environment variable (for standalone mode)
+    // 2. Aspire service discovery URLs
+    // 3. Default fallback
+    const backendUrl = 
+      process.env.BACKEND_URL || 
+      process.env.services__backend__http__0 || 
+      process.env.services__backend__https__0 ||
+      'http://localhost:5100';
     
-    if (!backendUrl) {
-      console.error('Backend URL not found in environment variables');
-      return [];
-    }
+    console.log('Using backend URL:', backendUrl);
 
     const response = await fetch(`${backendUrl}/WeatherForecast`, {
       cache: 'no-store' // Don't cache for demo purposes
@@ -67,7 +71,12 @@ export default async function Home() {
           <div>
             <p className="text-red-600">❌ Backend connection failed</p>
             <p className="text-sm text-gray-600 mt-2">
-              Backend URL: {process.env.services__backend__http__0 || process.env.services__backend__https__0 || 'Not found'}
+              Trying backend URL: {
+                process.env.BACKEND_URL || 
+                process.env.services__backend__http__0 || 
+                process.env.services__backend__https__0 ||
+                'http://localhost:5100'
+              }
             </p>
           </div>
         )}
@@ -75,8 +84,16 @@ export default async function Home() {
 
       <div className="mt-8 p-4 bg-gray-100 rounded">
         <h3 className="font-semibold mb-2">Debug Info:</h3>
-        <p className="text-sm">Backend HTTP URL: {process.env.services__backend__http__0 || 'Not set'}</p>
-        <p className="text-sm">Backend HTTPS URL: {process.env.services__backend__https__0 || 'Not set'}</p>
+        <p className="text-sm">Explicit Backend URL: {process.env.BACKEND_URL || 'Not set'}</p>
+        <p className="text-sm">Aspire HTTP URL: {process.env.services__backend__http__0 || 'Not set'}</p>
+        <p className="text-sm">Aspire HTTPS URL: {process.env.services__backend__https__0 || 'Not set'}</p>
+        <p className="text-sm">Fallback URL: http://localhost:5000</p>
+        <p className="text-sm font-semibold">Used URL: {
+          process.env.BACKEND_URL || 
+          process.env.services__backend__http__0 || 
+          process.env.services__backend__https__0 ||
+          'http://localhost:5100'
+        }</p>
       </div>
     </div>
   );
