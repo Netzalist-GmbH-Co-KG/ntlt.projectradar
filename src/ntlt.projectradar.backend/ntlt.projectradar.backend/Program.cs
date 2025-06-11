@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ntlt.projectradar.backend.BackgroundServices;
 using ntlt.projectradar.backend.Common;
 using ntlt.projectradar.backend.Data;
 using ntlt.projectradar.backend.Services;
@@ -27,6 +28,11 @@ try
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
     builder.Services.AddScoped<IEmailParserService, EmailParserService>();
     builder.Services.AddTransient<IGuidService, GuidService>();
+    builder.Services.AddTransient<IDelayService, DelayService>();
+    
+    // Add Background Services
+    builder.Services.AddSingleton<IEmailProcessingBackgroundService, EmailProcessingBackgroundService>();
+    builder.Services.AddHostedService<EmailProcessingBackgroundService>();
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowAll", policy =>

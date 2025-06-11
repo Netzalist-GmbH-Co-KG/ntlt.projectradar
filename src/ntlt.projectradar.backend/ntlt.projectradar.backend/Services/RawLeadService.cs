@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ntlt.projectradar.backend.BackgroundServices;
 using ntlt.projectradar.backend.Common;
 using ntlt.projectradar.backend.Data;
 using ntlt.projectradar.backend.Models;
@@ -10,12 +11,18 @@ public class RawLeadService : IRawLeadService
     private readonly ProjectRadarContext _context;
     private readonly IGuidService _guidService;
     private readonly ILogger<RawLeadService> _logger;
+    private readonly IEmailProcessingBackgroundService? _backgroundService;
 
-    public RawLeadService(ProjectRadarContext context, IGuidService guidService, ILogger<RawLeadService> logger)
+    public RawLeadService(
+        ProjectRadarContext context, 
+        IGuidService guidService, 
+        ILogger<RawLeadService> logger,
+        IEmailProcessingBackgroundService? backgroundService = null)
     {
         _context = context;
         _guidService = guidService;
         _logger = logger;
+        _backgroundService = backgroundService;
     }
 
     public async Task<RawLead> CreateRawLeadAsync(string emlContent, CancellationToken cancellationToken = default)
@@ -28,12 +35,14 @@ public class RawLeadService : IRawLeadService
             OriginalContent = emlContent,
             UploadedAt = DateTime.UtcNow,
             ProcessingStatus = ProcessingStatus.Processing
-        };
-
-        _context.RawLeads.Add(rawLead);
+        };        _context.RawLeads.Add(rawLead);
         await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("RawLead created successfully with ID: {RawLeadId}", rawLead.Id);
+        
+        // Trigger background processing
+        _backgroundService?.StartProcessing();
+        
         return rawLead;
     }
 
