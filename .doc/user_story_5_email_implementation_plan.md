@@ -26,11 +26,14 @@
 - [x] Database Update (`dotnet ef database update`)
 
 ### 4. Email Parser Service
-- [ ] `IEmailParserService` Interface erstellen
-- [ ] `EmailParserService` Implementation mit MimeKit
-- [ ] Email Headers extrahieren (From, To, Subject, Date, Reply-To)
-- [ ] Email Body extrahieren (Plain Text & HTML)
-- [ ] Attachments extrahieren und speichern
+- [x] `IEmailParserService` Interface erstellen
+- [x] `EmailParserService` Implementation mit MimeKit
+- [x] Email Headers extrahieren (From, To, Subject, Date, Reply-To)
+- [x] Email Body extrahieren (Plain Text & HTML)
+- [x] Attachments extrahieren und speichern
+- [x] Deduplizierung: Bestehende EmailDetails und Attachments überschreiben
+- [x] DI Registration in Program.cs
+- [x] Unit Tests für EmailParserService
 
 ### 5. Background Service
 - [ ] `EmailProcessingBackgroundService` erstellen
