@@ -88,16 +88,26 @@ public class EmailsController : ControllerBase
         {
             _logger.LogInformation("GET /api/emails/attachments/{AttachmentId} called", attachmentId);
 
-            var attachment = await _emailService.GetAttachmentByIdAsync(attachmentId, cancellationToken);
-
-            if (attachment == null)
+            var attachment = await _emailService.GetAttachmentByIdAsync(attachmentId, cancellationToken);            if (attachment == null)
             {
                 _logger.LogWarning("Attachment with ID {AttachmentId} not found", attachmentId);
                 return NotFound($"Attachment with ID {attachmentId} not found");
             }
 
+            // Convert Base64 content to byte array
+            byte[] fileBytes;
+            try
+            {
+                fileBytes = Convert.FromBase64String(attachment.AttachmentContent);
+            }
+            catch (FormatException ex)
+            {
+                _logger.LogError(ex, "Invalid Base64 content for attachment {AttachmentId}", attachmentId);
+                return StatusCode(500, "Attachment content is corrupted");
+            }
+
             return File(
-                attachment.AttachmentContent,
+                fileBytes,
                 attachment.AttachmentMimeType,
                 attachment.AttachmentFilename);
         }

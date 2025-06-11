@@ -7,7 +7,7 @@
 import { useState } from 'react';
 import { useEmails } from '../../hooks/useEmails';
 import EmailList from '../../components/Email/EmailList';
-import EmailDetailPlaceholder from '../../components/Email/EmailDetailPlaceholder';
+import EmailDetail from '../../components/Email/EmailDetail';
 import { EmailListDto } from '../../services/apiService';
 
 export default function EmailsPage() {
@@ -81,11 +81,9 @@ export default function EmailsPage() {
             onLoadPreviousPage={loadPreviousPage}
             onGoToPage={goToPage}
           />
-        </div>
-
-        {/* Email Detail - Right Panel */}
+        </div>        {/* Email Detail - Right Panel */}
         <div className="flex-1 bg-white min-w-0">
-          <EmailDetailPlaceholder selectedEmail={selectedEmail} />
+          <EmailDetail selectedEmail={selectedEmail} />
         </div>
       </div>
     </div>
