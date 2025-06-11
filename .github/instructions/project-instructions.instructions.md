@@ -7,6 +7,7 @@ applyTo: '**'
 - Create new projects and add dependencies using CLI commands
   like `dotnet new` or `npm create`, or `dotnet add package`.
 - Die CLI ist Powershell. Bitte bei der Syntax beachten (z.B. kein `&&` verwenden, sondern `;` für mehrere Befehle in einer Zeile).
+- Bitte keine Navigation Properties in den Datenmodellen erzeugen.
 
 # Base Information
 

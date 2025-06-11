@@ -1,14 +1,15 @@
-using Serilog;
 using Microsoft.EntityFrameworkCore;
 using ntlt.projectradar.backend.Common;
 using ntlt.projectradar.backend.Data;
 using ntlt.projectradar.backend.Services;
+using Serilog;
 
 // Configure Serilog from appsettings.json
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(new ConfigurationBuilder()
         .AddJsonFile("appsettings.json")
-        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
+            true)
         .Build())
     .CreateLogger();
 
@@ -19,21 +20,21 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // Replace built-in logging with Serilog
-    builder.Host.UseSerilog();    // Add services to the container.
-    builder.Services.AddControllers();    // Add Entity Framework and SQLite
+    builder.Host.UseSerilog(); // Add services to the container.
+    builder.Services.AddControllers(); // Add Entity Framework and SQLite
     builder.Services.AddDbContext<ProjectRadarContext>(options =>
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
     // Add Services
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
-    builder.Services.AddTransient<IGuidService, GuidService>(); 
+    builder.Services.AddTransient<IGuidService, GuidService>();
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowAll", policy =>
         {
             policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
     });
 
@@ -48,7 +49,7 @@ try
 
     app.UseSwagger();
     app.UseSwaggerUI();
-    
+
     // Enable CORS in development
     app.UseCors("AllowAll");
 

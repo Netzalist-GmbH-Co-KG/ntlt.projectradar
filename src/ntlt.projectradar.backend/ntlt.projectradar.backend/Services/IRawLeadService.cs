@@ -5,7 +5,7 @@ namespace ntlt.projectradar.backend.Services;
 public interface IRawLeadService
 {
     /// <summary>
-    /// Creates a new RawLead from uploaded .eml file content
+    ///     Creates a new RawLead from uploaded .eml file content
     /// </summary>
     /// <param name="emlContent">The content of the .eml file</param>
     /// <param name="cancellationToken">Cancellation token</param>
@@ -13,7 +13,7 @@ public interface IRawLeadService
     Task<RawLead> CreateRawLeadAsync(string emlContent, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Gets a RawLead by its ID
+    ///     Gets a RawLead by its ID
     /// </summary>
     /// <param name="id">The RawLead ID</param>
     /// <param name="cancellationToken">Cancellation token</param>
@@ -21,24 +21,26 @@ public interface IRawLeadService
     Task<RawLead?> GetRawLeadByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Gets all RawLeads with optional filtering
+    ///     Gets all RawLeads with optional filtering
     /// </summary>
     /// <param name="status">Optional status filter</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>List of RawLeads</returns>
-    Task<List<RawLead>> GetRawLeadsAsync(ProcessingStatus? status = null, CancellationToken cancellationToken = default);
+    Task<List<RawLead>> GetRawLeadsAsync(ProcessingStatus? status = null,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Updates the processing status of a RawLead
+    ///     Updates the processing status of a RawLead
     /// </summary>
     /// <param name="id">The RawLead ID</param>
     /// <param name="status">New processing status</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>True if updated successfully, false if not found</returns>
-    Task<bool> UpdateProcessingStatusAsync(Guid id, ProcessingStatus status, CancellationToken cancellationToken = default);
+    Task<bool> UpdateProcessingStatusAsync(Guid id, ProcessingStatus status,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Deletes a RawLead
+    ///     Deletes a RawLead
     /// </summary>
     /// <param name="id">The RawLead ID</param>
     /// <param name="cancellationToken">Cancellation token</param>

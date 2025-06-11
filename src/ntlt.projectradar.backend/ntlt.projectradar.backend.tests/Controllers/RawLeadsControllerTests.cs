@@ -1,10 +1,10 @@
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ntlt.projectradar.backend.Controllers;
 using ntlt.projectradar.backend.Models;
 using ntlt.projectradar.backend.Services;
-using System.Text;
 using ntlt.projectradar.backend.tests.TestHelper;
 
 namespace ntlt.projectradar.backend.tests.Controllers;
@@ -12,10 +12,6 @@ namespace ntlt.projectradar.backend.tests.Controllers;
 [TestFixture]
 public class RawLeadsControllerTests
 {
-    private IRawLeadService _rawLeadService = null!;
-    private ILogger<RawLeadsController> _logger = null!;
-    private RawLeadsController _controller = null!;
-
     [SetUp]
     public void Setup()
     {
@@ -24,7 +20,9 @@ public class RawLeadsControllerTests
         _controller = new RawLeadsController(_rawLeadService, _logger);
     }
 
-    #region UploadEmlFile Tests
+    private IRawLeadService _rawLeadService = null!;
+    private ILogger<RawLeadsController> _logger = null!;
+    private RawLeadsController _controller = null!;
 
     [Test]
     public async Task UploadEmlFile_WithValidEmlFile_ShouldReturnCreated()
@@ -32,7 +30,7 @@ public class RawLeadsControllerTests
         // Arrange
         const string emlContent = "From: test@example.com\nSubject: Test Project\n\nProject details here...";
         var file = CreateMockFormFile("test.eml", emlContent);
-          var expectedRawLead = new RawLead
+        var expectedRawLead = new RawLead
         {
             Id = TestGuids.TestId1,
             OriginalContent = emlContent,
@@ -51,7 +49,7 @@ public class RawLeadsControllerTests
         var createdResult = (CreatedAtActionResult)result.Result!;
         Assert.That(createdResult.Value, Is.EqualTo(expectedRawLead));
         Assert.That(createdResult.ActionName, Is.EqualTo(nameof(_controller.GetRawLead)));
-        
+
         await _rawLeadService.Received(1).CreateRawLeadAsync(emlContent, Arg.Any<CancellationToken>());
     }
 
@@ -65,7 +63,7 @@ public class RawLeadsControllerTests
         Assert.That(result.Result, Is.TypeOf<BadRequestObjectResult>());
         var badRequestResult = (BadRequestObjectResult)result.Result!;
         Assert.That(badRequestResult.Value, Is.Not.Null);
-        
+
         await _rawLeadService.DidNotReceive().CreateRawLeadAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
@@ -97,7 +95,7 @@ public class RawLeadsControllerTests
         var badRequestResult = (BadRequestObjectResult)result.Result!;
         var errorResponse = badRequestResult.Value;
         Assert.That(errorResponse!.ToString(), Does.Contain("Only .eml files are allowed"));
-        
+
         await _rawLeadService.DidNotReceive().CreateRawLeadAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
@@ -117,7 +115,7 @@ public class RawLeadsControllerTests
         var badRequestResult = (BadRequestObjectResult)result.Result!;
         var errorResponse = badRequestResult.Value;
         Assert.That(errorResponse!.ToString(), Does.Contain("File size exceeds 10MB limit"));
-        
+
         await _rawLeadService.DidNotReceive().CreateRawLeadAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
@@ -136,7 +134,7 @@ public class RawLeadsControllerTests
         var badRequestResult = (BadRequestObjectResult)result.Result!;
         var errorResponse = badRequestResult.Value;
         Assert.That(errorResponse!.ToString(), Does.Contain("Invalid .eml file - missing email headers"));
-        
+
         await _rawLeadService.DidNotReceive().CreateRawLeadAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
@@ -145,7 +143,8 @@ public class RawLeadsControllerTests
     {
         // Arrange
         const string emlContent = "From: test@example.com\nSubject: Test\n\nContent";
-        var file = CreateMockFormFile("test.eml", emlContent);        _rawLeadService.CreateRawLeadAsync(emlContent, Arg.Any<CancellationToken>())
+        var file = CreateMockFormFile("test.eml", emlContent);
+        _rawLeadService.CreateRawLeadAsync(emlContent, Arg.Any<CancellationToken>())
             .Returns(Task.FromException<RawLead>(new InvalidOperationException("Database error")));
 
         // Act
@@ -157,10 +156,6 @@ public class RawLeadsControllerTests
         Assert.That(objectResult.StatusCode, Is.EqualTo(500));
     }
 
-    #endregion
-
-    #region GetRawLead Tests    
-    
     [Test]
     public async Task GetRawLead_WithExistingId_ShouldReturnOk()
     {
@@ -184,8 +179,8 @@ public class RawLeadsControllerTests
         Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
         var okResult = (OkObjectResult)result.Result!;
         Assert.That(okResult.Value, Is.EqualTo(expectedRawLead));
-    }    
-    
+    }
+
     [Test]
     public async Task GetRawLead_WithNonExistingId_ShouldReturnNotFound()
     {
@@ -201,18 +196,22 @@ public class RawLeadsControllerTests
         Assert.That(result.Result, Is.TypeOf<NotFoundObjectResult>());
     }
 
-    #endregion
-
-    #region GetRawLeads Tests
-
     [Test]
     public async Task GetRawLeads_WithoutStatusFilter_ShouldReturnAllRawLeads()
     {
         // Arrange
         var expectedRawLeads = new List<RawLead>
         {
-            new() { Id = TestGuids.TestId1, OriginalContent = "Content 1", UploadedAt = DateTime.UtcNow, ProcessingStatus = ProcessingStatus.Processing },
-            new() { Id = TestGuids.TestId2, OriginalContent = "Content 2", UploadedAt = DateTime.UtcNow, ProcessingStatus = ProcessingStatus.Processing }
+            new()
+            {
+                Id = TestGuids.TestId1, OriginalContent = "Content 1", UploadedAt = DateTime.UtcNow,
+                ProcessingStatus = ProcessingStatus.Processing
+            },
+            new()
+            {
+                Id = TestGuids.TestId2, OriginalContent = "Content 2", UploadedAt = DateTime.UtcNow,
+                ProcessingStatus = ProcessingStatus.Processing
+            }
         };
 
         _rawLeadService.GetRawLeadsAsync(null, Arg.Any<CancellationToken>())
@@ -234,7 +233,11 @@ public class RawLeadsControllerTests
         var status = ProcessingStatus.Completed;
         var expectedRawLeads = new List<RawLead>
         {
-            new() { Id = TestGuids.TestId1, OriginalContent = "Completed Content", UploadedAt = DateTime.UtcNow, ProcessingStatus = ProcessingStatus.Completed }
+            new()
+            {
+                Id = TestGuids.TestId1, OriginalContent = "Completed Content", UploadedAt = DateTime.UtcNow,
+                ProcessingStatus = ProcessingStatus.Completed
+            }
         };
 
         _rawLeadService.GetRawLeadsAsync(status, Arg.Any<CancellationToken>())
@@ -247,17 +250,14 @@ public class RawLeadsControllerTests
         Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
         var okResult = (OkObjectResult)result.Result!;
         Assert.That(okResult.Value, Is.EqualTo(expectedRawLeads));
-        
+
         await _rawLeadService.Received(1).GetRawLeadsAsync(status, Arg.Any<CancellationToken>());
     }
 
-    #endregion
-
-    #region UpdateProcessingStatus Tests
-
     [Test]
     public async Task UpdateProcessingStatus_WithExistingId_ShouldReturnNoContent()
-    {        // Arrange
+    {
+        // Arrange
         var rawLeadId = TestGuids.TestId1;
         var request = new UpdateStatusRequest { Status = ProcessingStatus.Completed };
 
@@ -269,12 +269,14 @@ public class RawLeadsControllerTests
 
         // Assert
         Assert.That(result, Is.TypeOf<NoContentResult>());
-        await _rawLeadService.Received(1).UpdateProcessingStatusAsync(rawLeadId, request.Status, Arg.Any<CancellationToken>());
+        await _rawLeadService.Received(1)
+            .UpdateProcessingStatusAsync(rawLeadId, request.Status, Arg.Any<CancellationToken>());
     }
 
     [Test]
     public async Task UpdateProcessingStatus_WithNonExistingId_ShouldReturnNotFound()
-    {        // Arrange
+    {
+        // Arrange
         var nonExistingId = TestGuids.NonExistingId;
         var request = new UpdateStatusRequest { Status = ProcessingStatus.Completed };
 
@@ -287,10 +289,6 @@ public class RawLeadsControllerTests
         // Assert
         Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
     }
-
-    #endregion
-
-    #region DeleteRawLead Tests
 
     [Test]
     public async Task DeleteRawLead_WithExistingId_ShouldReturnNoContent()
@@ -323,22 +321,16 @@ public class RawLeadsControllerTests
         Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
     }
 
-    #endregion
-
-    #region Helper Methods
-
     private static IFormFile CreateMockFormFile(string fileName, string content, long? fileSize = null)
     {
         var bytes = Encoding.UTF8.GetBytes(content);
         var stream = new MemoryStream(bytes);
-        
+
         var formFile = Substitute.For<IFormFile>();
         formFile.FileName.Returns(fileName);
         formFile.Length.Returns(fileSize ?? bytes.Length);
         formFile.OpenReadStream().Returns(stream);
-        
+
         return formFile;
     }
-
-    #endregion
 }

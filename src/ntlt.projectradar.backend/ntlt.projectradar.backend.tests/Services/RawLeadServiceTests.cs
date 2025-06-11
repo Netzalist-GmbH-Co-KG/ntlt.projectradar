@@ -11,17 +11,12 @@ namespace ntlt.projectradar.backend.tests.Services;
 [TestFixture]
 public class RawLeadServiceTests
 {
-    private ProjectRadarContext _context = null!;
-    private ILogger<RawLeadService> _logger = null!;
-    private IGuidService _mockGuidService = null!;
-    private RawLeadService _service = null!;    
-    
     [SetUp]
     public void Setup()
     {
         // Create In-Memory database with unique name for each test
         var options = new DbContextOptionsBuilder<ProjectRadarContext>()
-            .UseInMemoryDatabase(databaseName: TestGuids.DatabaseId1.ToString())
+            .UseInMemoryDatabase(TestGuids.DatabaseId1.ToString())
             .Options;
 
         _context = new ProjectRadarContext(options);
@@ -31,21 +26,24 @@ public class RawLeadServiceTests
 
         // Ensure database is created
         _context.Database.EnsureCreated();
-    }    
-    
+    }
+
     [TearDown]
     public void TearDown()
     {
         // Clear all tracked entities from the context
         _context.ChangeTracker.Clear();
-        
+
         // Delete and recreate the database to ensure clean state
         _context.Database.EnsureDeleted();
-        
+
         _context.Dispose();
     }
 
-    #region CreateRawLeadAsync Tests
+    private ProjectRadarContext _context = null!;
+    private ILogger<RawLeadService> _logger = null!;
+    private IGuidService _mockGuidService = null!;
+    private RawLeadService _service = null!;
 
     [Test]
     public async Task CreateRawLeadAsync_WithValidEmlContent_ShouldCreateRawLead()
@@ -54,7 +52,7 @@ public class RawLeadServiceTests
         const string emlContent = "From: test@example.com\nSubject: Test Project\nBody content here";
 
         // Act
-        var result = await _service.CreateRawLeadAsync(emlContent);        // Assert
+        var result = await _service.CreateRawLeadAsync(emlContent); // Assert
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Id, Is.EqualTo(TestGuids.TestId1));
         Assert.That(result.OriginalContent, Is.EqualTo(emlContent));
@@ -107,15 +105,11 @@ public class RawLeadServiceTests
 
         // Act
         var result1 = await _service.CreateRawLeadAsync(emlContent1);
-        var result2 = await _service.CreateRawLeadAsync(emlContent2);        // Assert
+        var result2 = await _service.CreateRawLeadAsync(emlContent2); // Assert
         Assert.That(result1.Id, Is.EqualTo(TestGuids.TestId1));
         Assert.That(result2.Id, Is.EqualTo(TestGuids.TestId2));
         Assert.That(result1.Id, Is.Not.EqualTo(result2.Id));
     }
-
-    #endregion
-
-    #region GetRawLeadByIdAsync Tests
 
     [Test]
     public async Task GetRawLeadByIdAsync_WithExistingId_ShouldReturnRawLead()
@@ -130,7 +124,9 @@ public class RawLeadServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result!.Id, Is.EqualTo(rawLead.Id));
         Assert.That(result.OriginalContent, Is.EqualTo("Test content"));
-    }    [Test]
+    }
+
+    [Test]
     public async Task GetRawLeadByIdAsync_WithNonExistingId_ShouldReturnNull()
     {
         // Arrange
@@ -155,10 +151,6 @@ public class RawLeadServiceTests
         // Assert
         Assert.That(result, Is.Null);
     }
-
-    #endregion
-
-    #region GetRawLeadsAsync Tests
 
     [Test]
     public async Task GetRawLeadsAsync_WithNoFilter_ShouldReturnAllRawLeads()
@@ -198,7 +190,6 @@ public class RawLeadServiceTests
 
         Assert.That(completedResults.Count, Is.EqualTo(1));
         Assert.That(completedResults[0].Id, Is.EqualTo(rawLead2.Id));
-
     }
 
     [Test]
@@ -233,10 +224,6 @@ public class RawLeadServiceTests
         Assert.That(result.Count, Is.EqualTo(0));
     }
 
-    #endregion
-
-    #region UpdateProcessingStatusAsync Tests
-
     [Test]
     public async Task UpdateProcessingStatusAsync_WithExistingId_ShouldUpdateStatus()
     {
@@ -254,8 +241,8 @@ public class RawLeadServiceTests
         var updatedRawLead = await _service.GetRawLeadByIdAsync(rawLead.Id);
         Assert.That(updatedRawLead, Is.Not.Null);
         Assert.That(updatedRawLead!.ProcessingStatus, Is.EqualTo(ProcessingStatus.Completed));
-    }    
-    
+    }
+
     [Test]
     public async Task UpdateProcessingStatusAsync_WithNonExistingId_ShouldReturnFalse()
     {
@@ -276,8 +263,12 @@ public class RawLeadServiceTests
         var rawLead = await _service.CreateRawLeadAsync("Test content");
 
         // Act & Assert - Test all status transitions
-        var statuses = new[] { ProcessingStatus.Processing, ProcessingStatus.Completed, ProcessingStatus.Failed, ProcessingStatus.Processing };
-        
+        var statuses = new[]
+        {
+            ProcessingStatus.Processing, ProcessingStatus.Completed, ProcessingStatus.Failed,
+            ProcessingStatus.Processing
+        };
+
         foreach (var status in statuses)
         {
             var result = await _service.UpdateProcessingStatusAsync(rawLead.Id, status);
@@ -287,10 +278,6 @@ public class RawLeadServiceTests
             Assert.That(updatedRawLead!.ProcessingStatus, Is.EqualTo(status), $"Status not updated to: {status}");
         }
     }
-
-    #endregion
-
-    #region DeleteRawLeadAsync Tests
 
     [Test]
     public async Task DeleteRawLeadAsync_WithExistingId_ShouldDeleteRawLead()
@@ -307,8 +294,8 @@ public class RawLeadServiceTests
         // Verify it was deleted from database
         var deletedRawLead = await _service.GetRawLeadByIdAsync(rawLead.Id);
         Assert.That(deletedRawLead, Is.Null);
-    }    
-    
+    }
+
     [Test]
     public async Task DeleteRawLeadAsync_WithNonExistingId_ShouldReturnFalse()
     {
@@ -344,15 +331,12 @@ public class RawLeadServiceTests
         Assert.That(remaining.Any(r => r.Id == rawLead3.Id), Is.True);
     }
 
-    #endregion
-
-    #region Integration Tests
-
     [Test]
     public async Task CompleteWorkflow_CreateUpdateAndDelete_ShouldWorkCorrectly()
     {
         // Arrange
-        const string emlContent = "From: client@example.com\nSubject: New Project Inquiry\n\nWe need a web application...";
+        const string emlContent =
+            "From: client@example.com\nSubject: New Project Inquiry\n\nWe need a web application...";
 
         // Act & Assert - Create
         var rawLead = await _service.CreateRawLeadAsync(emlContent);
@@ -378,8 +362,8 @@ public class RawLeadServiceTests
 
         var deletedRawLead = await _service.GetRawLeadByIdAsync(rawLead.Id);
         Assert.That(deletedRawLead, Is.Null);
-    }    
-    
+    }
+
     [Test]
     public async Task ConcurrentOperations_ShouldHandleMultipleUsers()
     {
@@ -393,14 +377,14 @@ public class RawLeadServiceTests
             new("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
             new("ffffffff-ffff-ffff-ffff-ffffffffffff")
         };
-        
+
         var testGuidService = new MockGuidService(guidsForTest);
         var testService = new RawLeadService(_context, testGuidService, _logger);
-        
+
         var tasks = new List<Task<RawLead>>();
 
         // Act - Create multiple RawLeads concurrently
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             var content = $"Email content {i}";
             tasks.Add(testService.CreateRawLeadAsync(content));
@@ -411,10 +395,8 @@ public class RawLeadServiceTests
         // Assert
         Assert.That(results.Length, Is.EqualTo(10));
         Assert.That(results.Select(r => r.Id).Distinct().Count(), Is.EqualTo(10), "All IDs should be unique");
-        
+
         var allRawLeads = await testService.GetRawLeadsAsync();
         Assert.That(allRawLeads.Count, Is.EqualTo(10));
     }
-
-    #endregion
 }

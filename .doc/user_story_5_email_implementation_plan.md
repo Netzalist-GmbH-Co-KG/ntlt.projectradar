@@ -14,16 +14,16 @@
 - [x] ProcessingStatus enum anpassen (Status "New" entfernen, Default "Processing" beibehalten)
 
 ### 2. Database Models
-- [ ] `EmailDetails` Model erstellen (1:1 Relation zu RawLead)
+- [x] `EmailDetails` Model erstellen (1:1 Relation zu RawLead)
   - email_from, email_to, email_subject, email_date
   - email_body_text, email_body_html
-- [ ] `EmailAttachment` Model erstellen (n:1 Relation zu EmailDetails)
+- [x] `EmailAttachment` Model erstellen (n:1 Relation zu EmailDetails)
   - attachment_filename, attachment_mimetype, attachment_content
-- [ ] ProjectRadarContext um neue DbSets erweitern
+- [x] ProjectRadarContext um neue DbSets erweitern
 
 ### 3. Database Migration
-- [ ] EF Migration erstellen (`dotnet ef migrations add AddEmailDetailsAndAttachments`)
-- [ ] Database Update (`dotnet ef database update`)
+- [x] EF Migration erstellen (`dotnet ef migrations add AddEmailDetailsAndAttachments`)
+- [x] Database Update (`dotnet ef database update`)
 
 ### 4. Email Parser Service
 - [ ] `IEmailParserService` Interface erstellen

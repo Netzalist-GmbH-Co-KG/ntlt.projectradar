@@ -44,24 +44,19 @@ public class RawLeadService : IRawLeadService
         var rawLead = await _context.RawLeads
             .FirstOrDefaultAsync(rl => rl.Id == id, cancellationToken);
 
-        if (rawLead == null)
-        {
-            _logger.LogWarning("RawLead with ID {RawLeadId} not found", id);
-        }
+        if (rawLead == null) _logger.LogWarning("RawLead with ID {RawLeadId} not found", id);
 
         return rawLead;
     }
 
-    public async Task<List<RawLead>> GetRawLeadsAsync(ProcessingStatus? status = null, CancellationToken cancellationToken = default)
+    public async Task<List<RawLead>> GetRawLeadsAsync(ProcessingStatus? status = null,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Fetching RawLeads with status filter: {Status}", status?.ToString() ?? "All");
 
         var query = _context.RawLeads.AsQueryable();
 
-        if (status.HasValue)
-        {
-            query = query.Where(rl => rl.ProcessingStatus == status.Value);
-        }
+        if (status.HasValue) query = query.Where(rl => rl.ProcessingStatus == status.Value);
 
         var rawLeads = await query
             .OrderByDescending(rl => rl.UploadedAt)
@@ -71,7 +66,8 @@ public class RawLeadService : IRawLeadService
         return rawLeads;
     }
 
-    public async Task<bool> UpdateProcessingStatusAsync(Guid id, ProcessingStatus status, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateProcessingStatusAsync(Guid id, ProcessingStatus status,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Updating RawLead {RawLeadId} status to {Status}", id, status);
 
