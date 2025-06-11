@@ -3,6 +3,7 @@ using ntlt.projectradar.backend.BackgroundServices;
 using ntlt.projectradar.backend.Common;
 using ntlt.projectradar.backend.Data;
 using ntlt.projectradar.backend.Services;
+using ntlt.projectradar.backend.Services.AI;
 using Serilog;
 
 // Configure Serilog from appsettings.json
@@ -28,7 +29,12 @@ try
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IEmailParserService, EmailParserService>();
+    builder.Services.AddScoped<IProjectDetailsService, ProjectDetailsService>();
     builder.Services.AddSingleton<IEmailProcessingTrigger, EmailProcessingTrigger>();
+
+    // Add AI Services
+    builder.Services.AddScoped<IChatCompletion, OpenAIChatCompletion>();
+    builder.Services.AddScoped<IDataExtractionService, DataExtractionService>();
 
     // Add Common Services
     builder.Services.AddTransient<IGuidService, GuidService>();

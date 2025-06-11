@@ -88,7 +88,8 @@ public class EmailsController : ControllerBase
         {
             _logger.LogInformation("GET /api/emails/attachments/{AttachmentId} called", attachmentId);
 
-            var attachment = await _emailService.GetAttachmentByIdAsync(attachmentId, cancellationToken);            if (attachment == null)
+            var attachment = await _emailService.GetAttachmentByIdAsync(attachmentId, cancellationToken);
+            if (attachment == null)
             {
                 _logger.LogWarning("Attachment with ID {AttachmentId} not found", attachmentId);
                 return NotFound($"Attachment with ID {attachmentId} not found");

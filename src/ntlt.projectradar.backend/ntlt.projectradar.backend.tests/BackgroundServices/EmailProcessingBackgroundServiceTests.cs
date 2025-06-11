@@ -16,15 +16,18 @@ public class EmailProcessingBackgroundServiceTests
     {
         // Create mock services
         _emailParserService = Substitute.For<IEmailParserService>();
+
         _rawLeadService = Substitute.For<IRawLeadService>();
         _delayService = Substitute.For<IDelayService>();
         _logger = Substitute.For<ILogger<EmailProcessingBackgroundService>>();
         _emailProcessingTrigger = Substitute.For<IEmailProcessingTrigger>();
+        _projectDetailsService = Substitute.For<IProjectDetailsService>();
 
         // Create mock service provider
         _serviceProvider = Substitute.For<IServiceProvider>();
         _serviceProvider.GetService(typeof(IEmailParserService)).Returns(_emailParserService);
         _serviceProvider.GetService(typeof(IRawLeadService)).Returns(_rawLeadService);
+        _serviceProvider.GetService(typeof(IProjectDetailsService)).Returns(_projectDetailsService);
 
         // Create mock service scope
         _serviceScope = Substitute.For<IServiceScope>();
@@ -53,10 +56,12 @@ public class EmailProcessingBackgroundServiceTests
     private IServiceProvider _serviceProvider = null!;
     private IEmailParserService _emailParserService = null!;
     private IRawLeadService _rawLeadService = null!;
+    private IProjectDetailsService _projectDetailsService = null!;
     private IDelayService _delayService = null!;
     private ILogger<EmailProcessingBackgroundService> _logger = null!;
     private IEmailProcessingTrigger _emailProcessingTrigger = null!;
     private EmailProcessingBackgroundService _service = null!;
+
 
     [Test]
     public void StartProcessing_ShouldTriggerProcessing()
@@ -161,7 +166,8 @@ public class EmailProcessingBackgroundServiceTests
         await _service.ProcessEmailsAsync();
 
         // Assert
-        await _emailParserService.Received(1).ParseAndPersistEmailAsync(rawLead, Arg.Any<CancellationToken>());
+        await _emailParserService.Received(1)
+            .ParseAndPersistEmailAsync(rawLead, Arg.Any<CancellationToken>());
         await _rawLeadService.Received(1)
             .UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Failed, Arg.Any<CancellationToken>());
         await _rawLeadService.DidNotReceive()

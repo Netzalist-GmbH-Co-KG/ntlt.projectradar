@@ -24,4 +24,11 @@
         <ProjectReference Include="..\ntlt.projectradar.backend\ntlt.projectradar.backend.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="Services\AI\test-email.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
 </Project>
+    
