@@ -58,7 +58,7 @@ public class RawLeadServiceTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Id, Is.EqualTo(TestGuids.TestId1));
         Assert.That(result.OriginalContent, Is.EqualTo(emlContent));
-        Assert.That(result.ProcessingStatus, Is.EqualTo(ProcessingStatus.New));
+        Assert.That(result.ProcessingStatus, Is.EqualTo(ProcessingStatus.Processing));
         Assert.That(result.UploadedAt, Is.LessThanOrEqualTo(DateTime.UtcNow));
         Assert.That(result.UploadedAt, Is.GreaterThan(DateTime.UtcNow.AddMinutes(-1)));
 
@@ -80,7 +80,7 @@ public class RawLeadServiceTests
         // Assert
         Assert.That(result, Is.Not.Null);
         Assert.That(result.OriginalContent, Is.EqualTo(emlContent));
-        Assert.That(result.ProcessingStatus, Is.EqualTo(ProcessingStatus.New));
+        Assert.That(result.ProcessingStatus, Is.EqualTo(ProcessingStatus.Processing));
     }
 
     [Test]
@@ -191,17 +191,14 @@ public class RawLeadServiceTests
         // Act - filter by Processing status
         var processingResults = await _service.GetRawLeadsAsync(ProcessingStatus.Processing);
         var completedResults = await _service.GetRawLeadsAsync(ProcessingStatus.Completed);
-        var newResults = await _service.GetRawLeadsAsync(ProcessingStatus.New);
 
         // Assert
-        Assert.That(processingResults.Count, Is.EqualTo(1));
-        Assert.That(processingResults[0].Id, Is.EqualTo(rawLead1.Id));
+        Assert.That(processingResults.Count, Is.EqualTo(2));
+        Assert.That(processingResults[0].Id, Is.EqualTo(rawLead3.Id));
 
         Assert.That(completedResults.Count, Is.EqualTo(1));
         Assert.That(completedResults[0].Id, Is.EqualTo(rawLead2.Id));
 
-        Assert.That(newResults.Count, Is.EqualTo(1));
-        Assert.That(newResults[0].Id, Is.EqualTo(rawLead3.Id));
     }
 
     [Test]
@@ -245,7 +242,7 @@ public class RawLeadServiceTests
     {
         // Arrange
         var rawLead = await _service.CreateRawLeadAsync("Test content");
-        Assert.That(rawLead.ProcessingStatus, Is.EqualTo(ProcessingStatus.New));
+        Assert.That(rawLead.ProcessingStatus, Is.EqualTo(ProcessingStatus.Processing));
 
         // Act
         var result = await _service.UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed);
@@ -279,7 +276,7 @@ public class RawLeadServiceTests
         var rawLead = await _service.CreateRawLeadAsync("Test content");
 
         // Act & Assert - Test all status transitions
-        var statuses = new[] { ProcessingStatus.Processing, ProcessingStatus.Completed, ProcessingStatus.Failed, ProcessingStatus.New };
+        var statuses = new[] { ProcessingStatus.Processing, ProcessingStatus.Completed, ProcessingStatus.Failed, ProcessingStatus.Processing };
         
         foreach (var status in statuses)
         {
@@ -359,7 +356,7 @@ public class RawLeadServiceTests
 
         // Act & Assert - Create
         var rawLead = await _service.CreateRawLeadAsync(emlContent);
-        Assert.That(rawLead.ProcessingStatus, Is.EqualTo(ProcessingStatus.New));
+        Assert.That(rawLead.ProcessingStatus, Is.EqualTo(ProcessingStatus.Processing));
 
         // Act & Assert - Update Status to Processing
         var updateResult1 = await _service.UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Processing);

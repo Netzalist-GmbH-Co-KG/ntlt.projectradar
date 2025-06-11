@@ -18,7 +18,6 @@ public class RawLead
 
 public enum ProcessingStatus
 {
-    New,
     Processing,
     Completed,
     Failed

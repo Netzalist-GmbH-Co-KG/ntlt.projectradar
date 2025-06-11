@@ -10,8 +10,8 @@
 ## Backend Implementation
 
 ### 1. Dependencies & Setup
-- [ ] MimeKit Package zum Backend hinzufügen (`dotnet add package MimeKit`)
-- [ ] ProcessingStatus enum anpassen (Status "New" entfernen, Default "Processing" beibehalten)
+- [x] MimeKit Package zum Backend hinzufügen (`dotnet add package MimeKit`)
+- [x] ProcessingStatus enum anpassen (Status "New" entfernen, Default "Processing" beibehalten)
 
 ### 2. Database Models
 - [ ] `EmailDetails` Model erstellen (1:1 Relation zu RawLead)

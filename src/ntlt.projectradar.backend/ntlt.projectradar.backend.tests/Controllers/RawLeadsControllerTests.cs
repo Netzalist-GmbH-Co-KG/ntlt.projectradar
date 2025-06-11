@@ -37,7 +37,7 @@ public class RawLeadsControllerTests
             Id = TestGuids.TestId1,
             OriginalContent = emlContent,
             UploadedAt = DateTime.UtcNow,
-            ProcessingStatus = ProcessingStatus.New
+            ProcessingStatus = ProcessingStatus.Processing
         };
 
         _rawLeadService.CreateRawLeadAsync(emlContent, Arg.Any<CancellationToken>())
@@ -171,7 +171,7 @@ public class RawLeadsControllerTests
             Id = rawLeadId,
             OriginalContent = "Test content",
             UploadedAt = DateTime.UtcNow,
-            ProcessingStatus = ProcessingStatus.New
+            ProcessingStatus = ProcessingStatus.Processing
         };
 
         _rawLeadService.GetRawLeadByIdAsync(rawLeadId, Arg.Any<CancellationToken>())
@@ -211,7 +211,7 @@ public class RawLeadsControllerTests
         // Arrange
         var expectedRawLeads = new List<RawLead>
         {
-            new() { Id = TestGuids.TestId1, OriginalContent = "Content 1", UploadedAt = DateTime.UtcNow, ProcessingStatus = ProcessingStatus.New },
+            new() { Id = TestGuids.TestId1, OriginalContent = "Content 1", UploadedAt = DateTime.UtcNow, ProcessingStatus = ProcessingStatus.Processing },
             new() { Id = TestGuids.TestId2, OriginalContent = "Content 2", UploadedAt = DateTime.UtcNow, ProcessingStatus = ProcessingStatus.Processing }
         };
 

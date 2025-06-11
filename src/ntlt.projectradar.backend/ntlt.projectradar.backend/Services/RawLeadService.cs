@@ -27,7 +27,7 @@ public class RawLeadService : IRawLeadService
             Id = _guidService.NewGuid(),
             OriginalContent = emlContent,
             UploadedAt = DateTime.UtcNow,
-            ProcessingStatus = ProcessingStatus.New
+            ProcessingStatus = ProcessingStatus.Processing
         };
 
         _context.RawLeads.Add(rawLead);
