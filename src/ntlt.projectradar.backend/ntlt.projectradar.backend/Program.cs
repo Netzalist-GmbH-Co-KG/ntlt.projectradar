@@ -26,6 +26,7 @@ try
     builder.Services.AddDbContext<ProjectRadarContext>(options =>
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));    // Add Services
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
+    builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IEmailParserService, EmailParserService>();
     builder.Services.AddSingleton<IEmailProcessingTrigger, EmailProcessingTrigger>();
 

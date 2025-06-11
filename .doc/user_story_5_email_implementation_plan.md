@@ -1,4 +1,4 @@
-# User Story 5 - Email Content Viewer Implementation Plan
+# User Story #5 in Github - Email Content Viewer Implementation Plan
 
 ## Überblick
 **User Story**: Als Nutzer möchte ich die originalen Email-Inhalte einsehen können, damit ich alle Informationen zur Verfügung habe.
@@ -50,9 +50,9 @@
 - [x] Error Handling und Logging
 
 ### 7. API Erweiterung
-- [ ] Neuer emails controller GET /api/emails/ der einen paginierten Abruf der Emails erlaubt (chronologisch absteigend)
-- [ ] GET `/api/emails/{id}` für den Abruf einer einzelnen Email
-- [ ] Response DTOs für strukturierte Email-Daten inklusive der Attachments
+- [X] Neuer emails controller GET /api/emails/ der einen paginierten Abruf der Emails erlaubt (chronologisch absteigend)
+- [X] GET `/api/emails/{id}` für den Abruf einer einzelnen Email
+- [X] Response DTOs für strukturierte Email-Daten inklusive der Attachments
 
 ## Frontend Implementation
 

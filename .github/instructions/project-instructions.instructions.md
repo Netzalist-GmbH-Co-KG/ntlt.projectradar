@@ -11,8 +11,11 @@ applyTo: '**'
 
 # Base Information
 
-The project spec is in .doc/project_acquisition_system_spec.md
-The spec for the MVP is in .doc/mvp_specification.md
+- WICHTIG! Am Anfang jeder neuen Konversation, lies bitte immer diese Informationen sorgfältig durch.
+- .doc/project_acquisition_system_spec.md
+- .doc/mvp_specification.md
+- wir arbeiten immer an einer User Story in Github. Stelle sicher, dass Du weißt welche Story
+  gerade bearbeitet wird und rufe sie initial ab.
 
 ## GitHub Repository Information
 
