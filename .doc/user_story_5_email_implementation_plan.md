@@ -37,10 +37,12 @@
 
 ### 5. Background Service
 - [ ] `EmailProcessingBackgroundService` erstellen
-- [ ] AutoResetEvent/Semaphore für effiziente Endlos-Loop
+- [ ] Die Implementierung muss sicher testbar sein. Die Tests müssen ohne Verzögerung laufen (kein Task.Delay oder ähnliches)
+- [ ] AutoResetEvent für effiziente Endlos-Loop
 - [ ] Verarbeitung aller RawLeads mit Status "Processing"
 - [ ] Status-Updates (Processing → Completed/Failed)
 - [ ] DI Registration in Program.cs
+- [ ] UnitTests.
 
 ### 6. Service Integration
 - [ ] RawLeadService um Trigger-Funktionalität erweitern
