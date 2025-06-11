@@ -9,14 +9,11 @@ interface ProjectDetailDescriptionProps {
 }
 
 export default function ProjectDetailDescription({ description }: ProjectDetailDescriptionProps) {
-  if (!description) return null;
-
-  return (
-    <div>
-      <h3 className="text-sm font-medium text-neutral-900 mb-2">Description</h3>
-      <p className="text-neutral-700 text-sm leading-relaxed">
+  if (!description) return null;  return (
+    <div className="overflow-hidden">
+      <div className="text-neutral-500 text-xs leading-relaxed break-words hyphens-auto overflow-wrap-break-word max-w-full">
         {description}
-      </p>
+      </div>
     </div>
   );
 }

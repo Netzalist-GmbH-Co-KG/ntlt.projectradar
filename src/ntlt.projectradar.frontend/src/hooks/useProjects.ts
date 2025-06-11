@@ -466,3 +466,57 @@ export function useProjectEmailLinks(projectId?: string) {
     clearError,
   };
 }
+
+/**
+ * Hook for getting projects linked to a specific email
+ */
+export function useProjectsByEmail(emailId?: string) {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>();
+
+  const loadProjects = useCallback(async (id: string) => {
+    setIsLoading(true);
+    setError(undefined);
+    
+    try {
+      const projectDtos = await apiService.getProjectsByEmail(id);
+      const projects = projectDtos.map(ProjectUtils.fromDto);
+      setProjects(projects);
+    } catch (error) {
+      console.error('Failed to load projects for email:', error);
+      setError(error instanceof Error ? error.message : 'Failed to load projects');
+      setProjects([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const refetch = useCallback(() => {
+    if (emailId) {
+      loadProjects(emailId);
+    }
+  }, [emailId, loadProjects]);
+
+  const clearError = useCallback(() => {
+    setError(undefined);
+  }, []);
+
+  // Load projects when emailId changes
+  useEffect(() => {
+    if (emailId) {
+      loadProjects(emailId);
+    } else {
+      setProjects([]);
+      setError(undefined);
+    }
+  }, [emailId, loadProjects]);
+
+  return {
+    projects,
+    isLoading,
+    error,
+    refetch,
+    clearError,
+  };
+}

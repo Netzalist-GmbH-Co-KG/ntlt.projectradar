@@ -66,10 +66,10 @@ Implementierung einer vollständigen Projekt-Verwaltung mit echten Backend-Daten
 
 ### 8. EmailDetailHeader mit Projektliste
 **Datei:** `src/components/Email/EmailDetailHeader.tsx`
-- [ ] Projektliste oben rechts im Email Header
-- [ ] MouseOver: ProjectDetails als Overlay
-- [ ] Click: Navigation zu `/projects/{id}`
-- [ ] Integration mit `useProjectsByEmail(emailId)`
+- [x] Projektliste oben rechts im Email Header
+- [x] MouseOver: ProjectDetails als Overlay
+- [x] Click: Navigation zu `/projects/{id}`
+- [x] Integration mit `useProjectsByEmail(emailId)`
 
 ### 9. Neue Project Split-View Seite
 **Datei:** `src/app/projects/[[...id]]/page.tsx` (neu)
