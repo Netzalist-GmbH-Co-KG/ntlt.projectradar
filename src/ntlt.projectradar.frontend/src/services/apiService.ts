@@ -73,6 +73,50 @@ export interface EmailDetailsDto {
   attachments: EmailAttachmentDto[];
 }
 
+// Project-related interfaces
+export interface ProjectDetailsDto {
+  id: string;
+  title: string | null;
+  description: string | null;
+  clientName: string | null;
+  agencyName: string | null;
+  contactEmail: string | null;
+  budgetMin: number | null;
+  budgetMax: number | null;
+  timeline: string | null;
+  technologies: string[];
+  createdAt: string;
+}
+
+export interface CreateProjectDetailsDto {
+  title: string | null;
+  description: string | null;
+  clientName: string | null;
+  agencyName: string | null;
+  contactEmail: string | null;
+  budgetMin: number | null;
+  budgetMax: number | null;
+  timeline: string | null;
+  technologies: string[];
+}
+
+export interface UpdateProjectDetailsDto {
+  title: string | null;
+  description: string | null;
+  clientName: string | null;
+  agencyName: string | null;
+  contactEmail: string | null;
+  budgetMin: number | null;
+  budgetMax: number | null;
+  timeline: string | null;
+  technologies: string[];
+}
+
+export interface ProjectEmailLinkDto {
+  projectId: string;
+  emailId: string;
+}
+
 export interface ApiError {
   error: string;
 }
@@ -176,7 +220,6 @@ class ApiService {
 
     return response.blob();
   }
-
   // Helper method to download attachment with proper filename
   async downloadAttachmentAsFile(attachmentId: string, filename: string): Promise<void> {
     try {
@@ -199,6 +242,51 @@ class ApiService {
       console.error('Download failed:', error);
       throw error;
     }
+  }
+
+  // Project API methods
+  async getProjects(): Promise<ProjectDetailsDto[]> {
+    return this.fetchWithErrorHandling<ProjectDetailsDto[]>(`${API_BASE_URL}/api/projects`);
+  }
+
+  async getProjectById(id: string): Promise<ProjectDetailsDto> {
+    return this.fetchWithErrorHandling<ProjectDetailsDto>(`${API_BASE_URL}/api/projects/${id}`);
+  }
+
+  async createProject(project: CreateProjectDetailsDto): Promise<ProjectDetailsDto> {
+    return this.fetchWithErrorHandling<ProjectDetailsDto>(`${API_BASE_URL}/api/projects`, {
+      method: 'POST',
+      body: JSON.stringify(project),
+    });
+  }
+
+  async updateProject(id: string, project: UpdateProjectDetailsDto): Promise<ProjectDetailsDto> {
+    return this.fetchWithErrorHandling<ProjectDetailsDto>(`${API_BASE_URL}/api/projects/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(project),
+    });
+  }
+
+  async deleteProject(id: string): Promise<void> {
+    await this.fetchWithErrorHandling<void>(`${API_BASE_URL}/api/projects/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getProjectsByEmail(emailId: string): Promise<ProjectDetailsDto[]> {
+    return this.fetchWithErrorHandling<ProjectDetailsDto[]>(`${API_BASE_URL}/api/projects/by-email/${emailId}`);
+  }
+
+  async linkEmailToProject(projectId: string, emailId: string): Promise<void> {
+    await this.fetchWithErrorHandling<void>(`${API_BASE_URL}/api/projects/${projectId}/emails/${emailId}`, {
+      method: 'POST',
+    });
+  }
+
+  async unlinkEmailFromProject(projectId: string, emailId: string): Promise<void> {
+    await this.fetchWithErrorHandling<void>(`${API_BASE_URL}/api/projects/${projectId}/emails/${emailId}`, {
+      method: 'DELETE',
+    });
   }
 }
 
