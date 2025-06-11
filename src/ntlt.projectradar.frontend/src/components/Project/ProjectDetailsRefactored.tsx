@@ -1,3 +1,4 @@
+// filepath: c:\src\ntlt\ntlt.projectradar\src\ntlt.projectradar.frontend\src\components\Project\ProjectDetails.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -82,25 +83,16 @@ export function ProjectDetails({
 
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-neutral-200 ${className}`}>
-      {/* Header with Edit Button */}
       <ProjectDetailHeader 
         project={project}
         showEditButton={!!onUpdateProject}
         onEdit={handleEditToggle}
       />
 
-      {/* Content */}
       <div className="p-6 space-y-6">
-        {/* Description */}
         <ProjectDetailDescription description={project.description} />
-
-        {/* Project Details Grid */}
         <ProjectDetailInfoGrid project={project} />
-
-        {/* Technologies */}
         <ProjectDetailTechnologies technologies={project.technologies || []} />
-
-        {/* Metadata */}
         <ProjectDetailMetadata project={project} />
       </div>
     </div>

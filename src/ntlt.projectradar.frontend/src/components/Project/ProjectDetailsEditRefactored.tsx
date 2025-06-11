@@ -1,3 +1,4 @@
+// filepath: c:\src\ntlt\ntlt.projectradar\src\ntlt.projectradar.frontend\src\components\Project\ProjectDetailsEdit.tsx
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -7,6 +8,7 @@ import ProjectEditBasicInfo from './ProjectEditBasicInfo';
 import ProjectEditDescription from './ProjectEditDescription';
 import ProjectEditBudgetTimeline from './ProjectEditBudgetTimeline';
 import ProjectEditTechnologies from './ProjectEditTechnologies';
+import ProjectEditFooter from './ProjectEditFooter';
 
 interface ProjectDetailsEditProps {
   project: Project;
@@ -145,6 +147,8 @@ export function ProjectDetailsEdit({
           formData={formData}
           updateFormData={updateFormData}
         />
+
+        <ProjectEditFooter />
       </div>
     </div>
   );

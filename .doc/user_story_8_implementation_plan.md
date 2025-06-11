@@ -57,12 +57,12 @@ Implementierung einer vollständigen Projekt-Verwaltung mit echten Backend-Daten
 
 ### 7. EmailDetails Refactoring - Sub-Komponenten
 **Dateien:** `src/components/Email/` (Refactoring)
-- [ ] `EmailDetailContent.tsx` - Email Content Bereich
-- [ ] `EmailDetailAttachments.tsx` - Attachments Bereich
-- [ ] `EmailDetailHeader.tsx` - Header mit Projekten
-- [ ] `EmailDetailError.tsx` - Error States
-- [ ] `EmailDetailMissing.tsx` - Missing States
-- [ ] `EmailDetail.tsx` refactored zu Composition
+- [x] `EmailDetailContent.tsx` - Email Content Bereich
+- [x] `EmailDetailAttachments.tsx` - Attachments Bereich
+- [x] `EmailDetailHeader.tsx` - Header mit Projekten
+- [x] `EmailDetailError.tsx` - Error States
+- [x] `EmailDetailMissing.tsx` - Missing States
+- [x] `EmailDetail.tsx` refactored zu Composition
 
 ### 8. EmailDetailHeader mit Projektliste
 **Datei:** `src/components/Email/EmailDetailHeader.tsx`
