@@ -2,7 +2,7 @@
  * Email utility functions and helper methods
  */
 
-import { EmailDetailsDto, EmailListDto } from './apiService';
+import { EmailDetailsDto } from './apiService';
 
 export interface EmailDisplayOptions {
   showHtml: boolean;

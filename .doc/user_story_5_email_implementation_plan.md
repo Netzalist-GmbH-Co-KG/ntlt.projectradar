@@ -64,13 +64,13 @@
 - [x] Custom React Hooks für Email-Datenmanagement
 
 ### 9. Routing & Pages
-- [ ] `/emails` Route erstellen (Email-Client Layout)
+- [x] `/emails` Route erstellen (Email-Client Layout)
 
 ### 10. Email List Component
-- [ ] Kompakte Liste mit Autoscroller (100 Emails pro Batch)
-- [ ] Zwei-Zeilen Layout: Absender/Datum + Subject
-- [ ] Chronologische Sortierung (absteigend)
-- [ ] Loading States und Pagination
+- [x] Kompakte Liste mit Autoscroller (100 Emails pro Batch)
+- [x] Zwei-Zeilen Layout: Absender/Datum + Subject
+- [x] Chronologische Sortierung (absteigend)
+- [x] Loading States und Pagination
 
 ### 11. Email Detail Component
 - [ ] Email Headers in strukturierter Card-Form
@@ -124,7 +124,6 @@
 - [ ] Email-Page `/emails` mit Email-Client Layout (Liste links, Details rechts)
 - [ ] Liste mit Autoscroller (100 Emails), chronologisch absteigend
 - [ ] Kompakte Darstellung: Absender/Datum + Subject
-- [ ] Email Detail-Page `/emails/{id}` mit allen Headers und Body (Text/HTML)
 - [ ] Mobile responsive Layout
 - [ ] Error Handling für nicht existierende IDs
 - [ ] Loading States für alle API Calls

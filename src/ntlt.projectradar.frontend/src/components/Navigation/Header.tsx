@@ -11,10 +11,10 @@ interface HeaderProps {
 export default function Header({ className = '' }: HeaderProps) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  const navigationItems = [
+    const navigationItems = [
     { name: 'Home', href: '/' },
     { name: 'Upload', href: '/upload' },
+    { name: 'E-Mails', href: '/emails' },
     { name: 'Projects', href: '/projects' },
     { name: 'Search', href: '/search' },
   ];

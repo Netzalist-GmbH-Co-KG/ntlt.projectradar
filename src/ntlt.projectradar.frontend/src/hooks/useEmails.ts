@@ -74,11 +74,10 @@ export const useEmails = (options: UseEmailsOptions = {}): UseEmailsResult => {
   const goToPage = useCallback(async (pageNumber: number) => {
     await fetchEmails(pageNumber);
   }, [fetchEmails]);
-
   // Initial load
   useEffect(() => {
     fetchEmails(page);
-  }, [page, pageSize]);
+  }, [page, pageSize, fetchEmails]);
 
   // Auto-refresh functionality
   useEffect(() => {
