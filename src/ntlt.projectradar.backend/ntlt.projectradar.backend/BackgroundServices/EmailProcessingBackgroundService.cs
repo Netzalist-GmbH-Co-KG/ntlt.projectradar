@@ -6,25 +6,22 @@ namespace ntlt.projectradar.backend.BackgroundServices;
 
 public class EmailProcessingBackgroundService : BackgroundService, IEmailProcessingBackgroundService
 {
-    private readonly IEmailParserService _parserService;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IEmailProcessingTrigger _emailProcessingTrigger;
-    private readonly IRawLeadService _rawLeadService;
     private readonly IDelayService _delayService;
     private readonly ILogger<EmailProcessingBackgroundService> _logger;
     private readonly AutoResetEvent _event = new(false);
     private Task? _executeTask;
 
     public EmailProcessingBackgroundService(
-        IEmailParserService parserService, 
+        IServiceScopeFactory serviceScopeFactory,
         IEmailProcessingTrigger emailProcessingTrigger,
-        IRawLeadService rawLeadService,
         IDelayService delayService, 
         ILogger<EmailProcessingBackgroundService> logger)
     {
-        _parserService = parserService;
+        _serviceScopeFactory = serviceScopeFactory;
         _emailProcessingTrigger = emailProcessingTrigger;
-        _rawLeadService = rawLeadService;
-        _emailProcessingTrigger.OnProcessingTriggered += (_,_) => StartProcessing();
+        _emailProcessingTrigger.OnProcessingTriggered += (_, _) => StartProcessing();
         _delayService = delayService;
         _logger = logger;
     }
@@ -67,15 +64,17 @@ public class EmailProcessingBackgroundService : BackgroundService, IEmailProcess
         
         return _executeTask;
     }
-    
-    public async Task ProcessEmailsAsync(CancellationToken cancellationToken = default)
+      public async Task ProcessEmailsAsync(CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Starting email processing batch");
             
+            using var scope = _serviceScopeFactory.CreateScope();
+            var rawLeadService = scope.ServiceProvider.GetRequiredService<IRawLeadService>();
+            
             // Get all RawLeads with Processing status
-            var processingRawLeads = await _rawLeadService.GetRawLeadsAsync(
+            var processingRawLeads = await rawLeadService.GetRawLeadsAsync(
                 ProcessingStatus.Processing, cancellationToken);
             
             if (!processingRawLeads.Any())
@@ -109,11 +108,15 @@ public class EmailProcessingBackgroundService : BackgroundService, IEmailProcess
         {
             _logger.LogDebug("Processing RawLead {RawLeadId}", rawLead.Id);
             
+            using var scope = _serviceScopeFactory.CreateScope();
+            var parserService = scope.ServiceProvider.GetRequiredService<IEmailParserService>();
+            var rawLeadService = scope.ServiceProvider.GetRequiredService<IRawLeadService>();
+            
             // Parse and persist email details
-            await _parserService.ParseAndPersistEmailAsync(rawLead, cancellationToken);
+            await parserService.ParseAndPersistEmailAsync(rawLead, cancellationToken);
             
             // Update status to Completed
-            await _rawLeadService.UpdateProcessingStatusAsync(
+            await rawLeadService.UpdateProcessingStatusAsync(
                 rawLead.Id, ProcessingStatus.Completed, cancellationToken);
             
             _logger.LogDebug("Successfully processed RawLead {RawLeadId}", rawLead.Id);
@@ -124,8 +127,11 @@ public class EmailProcessingBackgroundService : BackgroundService, IEmailProcess
             
             try
             {
+                using var scope = _serviceScopeFactory.CreateScope();
+                var rawLeadService = scope.ServiceProvider.GetRequiredService<IRawLeadService>();
+                
                 // Update status to Failed
-                await _rawLeadService.UpdateProcessingStatusAsync(
+                await rawLeadService.UpdateProcessingStatusAsync(
                     rawLead.Id, ProcessingStatus.Failed, cancellationToken);
             }
             catch (Exception updateEx)

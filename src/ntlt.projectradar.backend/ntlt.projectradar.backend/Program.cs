@@ -27,7 +27,7 @@ try
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));    // Add Services
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
     builder.Services.AddScoped<IEmailParserService, EmailParserService>();
-    builder.Services.AddScoped<IEmailProcessingTrigger, EmailProcessingTrigger>();
+    builder.Services.AddSingleton<IEmailProcessingTrigger, EmailProcessingTrigger>();
 
     // Add Common Services
     builder.Services.AddTransient<IGuidService, GuidService>();

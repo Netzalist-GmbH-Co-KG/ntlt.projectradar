@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using ntlt.projectradar.backend.BackgroundServices;
@@ -11,34 +12,47 @@ namespace ntlt.projectradar.backend.tests.BackgroundServices;
 [TestFixture]
 public class EmailProcessingBackgroundServiceTests
 {
+    private IServiceScopeFactory _serviceScopeFactory = null!;
+    private IServiceScope _serviceScope = null!;
+    private IServiceProvider _serviceProvider = null!;
     private IEmailParserService _emailParserService = null!;
     private IRawLeadService _rawLeadService = null!;
     private IDelayService _delayService = null!;
     private ILogger<EmailProcessingBackgroundService> _logger = null!;
-    private EmailProcessingBackgroundService _service = null!;
     private IEmailProcessingTrigger _emailProcessingTrigger = null!;
-
-    [SetUp]
+    private EmailProcessingBackgroundService _service = null!;    [SetUp]
     public void Setup()
     {
+        // Create mock services
         _emailParserService = Substitute.For<IEmailParserService>();
         _rawLeadService = Substitute.For<IRawLeadService>();
         _delayService = Substitute.For<IDelayService>();
         _logger = Substitute.For<ILogger<EmailProcessingBackgroundService>>();
         _emailProcessingTrigger = Substitute.For<IEmailProcessingTrigger>();
 
+        // Create mock service provider
+        _serviceProvider = Substitute.For<IServiceProvider>();
+        _serviceProvider.GetService(typeof(IEmailParserService)).Returns(_emailParserService);
+        _serviceProvider.GetService(typeof(IRawLeadService)).Returns(_rawLeadService);
+
+        // Create mock service scope
+        _serviceScope = Substitute.For<IServiceScope>();
+        _serviceScope.ServiceProvider.Returns(_serviceProvider);
+
+        // Create mock service scope factory
+        _serviceScopeFactory = Substitute.For<IServiceScopeFactory>();
+        _serviceScopeFactory.CreateScope().Returns(_serviceScope);
+
         _service = new EmailProcessingBackgroundService(
-            _emailParserService,
+            _serviceScopeFactory,
             _emailProcessingTrigger,
-            _rawLeadService,
             _delayService,
             _logger);
-    }
-
-    [TearDown]
+    }[TearDown]
     public void TearDown()
     {
         _service.Dispose();
+        _serviceScope?.Dispose();
     }
 
     #region StartProcessing Tests

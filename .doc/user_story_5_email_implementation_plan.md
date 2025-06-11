@@ -36,23 +36,23 @@
 - [x] Unit Tests für EmailParserService
 
 ### 5. Background Service
-- [ ] `EmailProcessingBackgroundService` erstellen
-- [ ] Die Implementierung muss sicher testbar sein. Die Tests müssen ohne Verzögerung laufen (kein Task.Delay oder ähnliches)
-- [ ] AutoResetEvent für effiziente Endlos-Loop
-- [ ] Verarbeitung aller RawLeads mit Status "Processing"
-- [ ] Status-Updates (Processing → Completed/Failed)
-- [ ] DI Registration in Program.cs
-- [ ] UnitTests.
+- [x] `EmailProcessingBackgroundService` erstellen
+- [x] Die Implementierung muss sicher testbar sein. Die Tests müssen ohne Verzögerung laufen (kein Task.Delay oder ähnliches)
+- [x] AutoResetEvent für effiziente Endlos-Loop
+- [x] Verarbeitung aller RawLeads mit Status "Processing"
+- [x] Status-Updates (Processing → Completed/Failed)
+- [x] DI Registration in Program.cs
+- [x] UnitTests.
 
 ### 6. Service Integration
-- [ ] RawLeadService um Trigger-Funktionalität erweitern
-- [ ] AutoResetEvent nach Upload triggern
-- [ ] Error Handling und Logging
+- [x] RawLeadService um Trigger-Funktionalität erweitern
+- [x] AutoResetEvent nach Upload triggern
+- [x] Error Handling und Logging
 
 ### 7. API Erweiterung
-- [ ] RawLeadsController um EmailDetails Endpoint erweitern
-- [ ] GET `/api/rawleads/{id}/details` für Email-Details
-- [ ] Response DTOs für strukturierte Email-Daten
+- [ ] Neuer emails controller GET /api/emails/ der einen paginierten Abruf der Emails erlaubt (chronologisch absteigend)
+- [ ] GET `/api/emails/{id}` für den Abruf einer einzelnen Email
+- [ ] Response DTOs für strukturierte Email-Daten inklusive der Attachments
 
 ## Frontend Implementation
 
