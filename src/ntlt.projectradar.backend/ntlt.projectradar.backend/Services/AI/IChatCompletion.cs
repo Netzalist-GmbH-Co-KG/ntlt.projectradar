@@ -5,5 +5,6 @@ namespace ntlt.projectradar.backend.Services.AI;
 
 public interface IChatCompletion
 {
-    public Task<ProjectDetails?> GetCompletionAsync(IImmutableList<ChatMessage> messages, CancellationToken cancellationToken = default);
+    public Task<ProjectDetails?> GetCompletionAsync(IImmutableList<ChatMessage> messages,
+        CancellationToken cancellationToken = default);
 }

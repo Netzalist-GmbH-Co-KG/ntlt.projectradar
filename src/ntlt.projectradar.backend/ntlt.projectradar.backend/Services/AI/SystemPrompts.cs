@@ -2,7 +2,8 @@
 
 public static class SystemPrompts
 {
-    public const string DefaultSystemPrompt = @"You are an AI assistant specialized in extracting structured project data from email content. 
+    public const string DefaultSystemPrompt =
+        @"You are an AI assistant specialized in extracting structured project data from email content. 
 
 Your task is to analyze email content and extract relevant information about software development projects, consulting opportunities, or similar work proposals.
 

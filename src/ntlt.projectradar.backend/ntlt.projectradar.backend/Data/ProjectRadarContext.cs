@@ -9,6 +9,7 @@ public class ProjectRadarContext : DbContext
         : base(options)
     {
     }
+
     public DbSet<RawLead> RawLeads { get; set; } = null!;
     public DbSet<EmailDetails> EmailDetails { get; set; } = null!;
     public DbSet<EmailAttachment> EmailAttachments { get; set; } = null!;
@@ -86,7 +87,8 @@ public class ProjectRadarContext : DbContext
                 .HasMaxLength(200);
 
             entity.Property(e => e.AttachmentContent)
-                .HasMaxLength(int.MaxValue);            entity.Property(e => e.CreatedAt)
+                .HasMaxLength(int.MaxValue);
+            entity.Property(e => e.CreatedAt)
                 .IsRequired();
         });
 

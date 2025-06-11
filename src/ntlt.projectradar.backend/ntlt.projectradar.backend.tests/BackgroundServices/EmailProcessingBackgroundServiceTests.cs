@@ -11,24 +11,12 @@ namespace ntlt.projectradar.backend.tests.BackgroundServices;
 [TestFixture]
 public class EmailProcessingBackgroundServiceTests
 {
-    
-    private IServiceScopeFactory _serviceScopeFactory = null!;
-    private IServiceScope _serviceScope = null!;
-    private IServiceProvider _serviceProvider = null!;
-    private IEmailParserService _emailParserService = null!;
-    private IRawLeadService _rawLeadService = null!;
-    private IProjectDetailsService _projectDetailsService = null!;
-    private IDelayService _delayService = null!;
-    private ILogger<EmailProcessingBackgroundService> _logger = null!;
-    private IEmailProcessingTrigger _emailProcessingTrigger = null!;
-    private EmailProcessingBackgroundService _service = null!;
-    
     [SetUp]
     public void Setup()
     {
         // Create mock services
         _emailParserService = Substitute.For<IEmailParserService>();
-        
+
         _rawLeadService = Substitute.For<IRawLeadService>();
         _delayService = Substitute.For<IDelayService>();
         _logger = Substitute.For<ILogger<EmailProcessingBackgroundService>>();
@@ -40,7 +28,7 @@ public class EmailProcessingBackgroundServiceTests
         _serviceProvider.GetService(typeof(IEmailParserService)).Returns(_emailParserService);
         _serviceProvider.GetService(typeof(IRawLeadService)).Returns(_rawLeadService);
         _serviceProvider.GetService(typeof(IProjectDetailsService)).Returns(_projectDetailsService);
-        
+
         // Create mock service scope
         _serviceScope = Substitute.For<IServiceScope>();
         _serviceScope.ServiceProvider.Returns(_serviceProvider);
@@ -62,6 +50,17 @@ public class EmailProcessingBackgroundServiceTests
         _service.Dispose();
         _serviceScope?.Dispose();
     }
+
+    private IServiceScopeFactory _serviceScopeFactory = null!;
+    private IServiceScope _serviceScope = null!;
+    private IServiceProvider _serviceProvider = null!;
+    private IEmailParserService _emailParserService = null!;
+    private IRawLeadService _rawLeadService = null!;
+    private IProjectDetailsService _projectDetailsService = null!;
+    private IDelayService _delayService = null!;
+    private ILogger<EmailProcessingBackgroundService> _logger = null!;
+    private IEmailProcessingTrigger _emailProcessingTrigger = null!;
+    private EmailProcessingBackgroundService _service = null!;
 
 
     [Test]

@@ -1,7 +1,7 @@
 namespace ntlt.projectradar.backend.Services.AI;
 
 /// <summary>
-/// Schema for OpenAI Function Calling to extract project data from email content
+///     Schema for OpenAI Function Calling to extract project data from email content
 /// </summary>
 public class ProjectExtractionSchema
 {

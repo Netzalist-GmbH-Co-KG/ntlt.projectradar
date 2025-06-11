@@ -5,15 +5,16 @@ namespace ntlt.projectradar.backend.Services.AI;
 
 public class DataExtractionService : IDataExtractionService
 {
-    private readonly ILogger<DataExtractionService> _logger;
     private readonly IChatCompletion _completion;
+    private readonly ILogger<DataExtractionService> _logger;
 
     public DataExtractionService(IChatCompletion completion, ILogger<DataExtractionService> logger)
     {
         _logger = logger;
         _completion = completion;
     }
-      public async Task<ProjectDetails?> Extract(string rawData, CancellationToken cancellationToken = default)
+
+    public async Task<ProjectDetails?> Extract(string rawData, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -29,7 +30,7 @@ public class DataExtractionService : IDataExtractionService
         catch (Exception e)
         {
             _logger.LogError(e, "Error extracting data from raw content");
-            return null;    
+            return null;
         }
     }
 }

@@ -1,12 +1,12 @@
+using System.Collections.Immutable;
 using Microsoft.Extensions.Logging;
 using ntlt.projectradar.backend.Services.AI;
-using System.Collections.Immutable;
 
 namespace ntlt.projectradar.backend.tests.Services.AI;
 
 /// <summary>
-/// Integration test for OpenAI Function Calling - TEMPORARY for manual testing
-/// This will be removed later once the feature is stable
+///     Integration test for OpenAI Function Calling - TEMPORARY for manual testing
+///     This will be removed later once the feature is stable
 /// </summary>
 public class OpenAIChatCompletionIntegrationTests
 {
@@ -19,7 +19,8 @@ public class OpenAIChatCompletionIntegrationTests
         _chatCompletion = new OpenAIChatCompletion(_logger);
     }
 
-    [Test][Ignore("This test is for manual inspection and should not run automatically")]
+    [Test]
+    [Ignore("This test is for manual inspection and should not run automatically")]
     public async Task ExtractProjectData_WithRealEmail_ShouldReturnStructuredData()
     {
         // Arrange
@@ -37,7 +38,7 @@ public class OpenAIChatCompletionIntegrationTests
 
         // Assert
         Assert.NotNull(result);
-        
+
         // Log the results for manual inspection
         _logger.LogInformation("=== EXTRACTION RESULTS ===");
         _logger.LogInformation($"Title: {result.Title}");
@@ -54,6 +55,7 @@ public class OpenAIChatCompletionIntegrationTests
         // Basic assertions to ensure extraction worked
         Assert.True(!string.IsNullOrEmpty(result.Title), "Title should be extracted");
         Assert.True(result.Technologies.Count > 0, "Technologies should be extracted");
-        Assert.True(result.BudgetMin.HasValue || result.BudgetMax.HasValue, "Some budget information should be extracted");
+        Assert.True(result.BudgetMin.HasValue || result.BudgetMax.HasValue,
+            "Some budget information should be extracted");
     }
 }
