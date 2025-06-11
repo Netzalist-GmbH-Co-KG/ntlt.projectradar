@@ -16,7 +16,8 @@ public class EmailService : IEmailService
         _logger = logger;
     }
 
-    public async Task<EmailListResponseDto> GetEmailsAsync(int page = 1, int pageSize = 100, CancellationToken cancellationToken = default)
+    public async Task<EmailListResponseDto> GetEmailsAsync(int page = 1, int pageSize = 100,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Fetching emails for page {Page} with page size {PageSize}", page, pageSize);
 
@@ -38,7 +39,7 @@ public class EmailService : IEmailService
             .OrderByDescending(e => e.EmailDate ?? e.CreatedAt)
             .Skip(skip)
             .Take(pageSize)
-            .ToListAsync(cancellationToken);        // Get attachment information for these emails
+            .ToListAsync(cancellationToken); // Get attachment information for these emails
         var emailIds = emailDetails.Select(e => e.Id).ToList();
         var attachments = await _context.EmailAttachments
             .Where(a => emailIds.Contains(a.EmailDetailsId))
@@ -49,7 +50,7 @@ public class EmailService : IEmailService
         var emailDtos = emailDetails.Select(email =>
         {
             var emailAttachments = attachments
-                .Where(a => a.EmailDetailsId == email.Id)                .Select(a => new EmailAttachmentListDto
+                .Where(a => a.EmailDetailsId == email.Id).Select(a => new EmailAttachmentListDto
                 {
                     Id = a.Id,
                     AttachmentFilename = a.AttachmentFilename,
@@ -80,7 +81,8 @@ public class EmailService : IEmailService
             HasPreviousPage = page > 1
         };
 
-        _logger.LogInformation("Retrieved {Count} emails for page {Page}/{TotalPages}", emailDtos.Count(), page, totalPages);
+        _logger.LogInformation("Retrieved {Count} emails for page {Page}/{TotalPages}", emailDtos.Count(), page,
+            totalPages);
         return response;
     }
 
@@ -95,7 +97,8 @@ public class EmailService : IEmailService
         {
             _logger.LogWarning("Email with ID {EmailId} not found", id);
             return null;
-        }        // Get attachments for this email
+        } // Get attachments for this email
+
         var attachments = await _context.EmailAttachments
             .Where(a => a.EmailDetailsId == id)
             .Select(a => new EmailAttachmentDto
@@ -125,17 +128,15 @@ public class EmailService : IEmailService
         return emailDto;
     }
 
-    public async Task<EmailAttachment?> GetAttachmentByIdAsync(Guid attachmentId, CancellationToken cancellationToken = default)
+    public async Task<EmailAttachment?> GetAttachmentByIdAsync(Guid attachmentId,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Fetching attachment with ID: {AttachmentId}", attachmentId);
 
         var attachment = await _context.EmailAttachments
             .FirstOrDefaultAsync(a => a.Id == attachmentId, cancellationToken);
 
-        if (attachment == null)
-        {
-            _logger.LogWarning("Attachment with ID {AttachmentId} not found", attachmentId);
-        }
+        if (attachment == null) _logger.LogWarning("Attachment with ID {AttachmentId} not found", attachmentId);
 
         return attachment;
     }

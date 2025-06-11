@@ -1,9 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace ntlt.projectradar.backend.DTOs;
 
 /// <summary>
-/// DTO for email attachment information (without content)
+///     DTO for email attachment information (without content)
 /// </summary>
 public class EmailAttachmentListDto
 {
@@ -13,7 +11,7 @@ public class EmailAttachmentListDto
 }
 
 /// <summary>
-/// DTO for paginated email list view
+///     DTO for paginated email list view
 /// </summary>
 public class EmailListDto
 {
@@ -28,7 +26,7 @@ public class EmailListDto
 }
 
 /// <summary>
-/// DTO for paginated email list response
+///     DTO for paginated email list response
 /// </summary>
 public class EmailListResponseDto
 {

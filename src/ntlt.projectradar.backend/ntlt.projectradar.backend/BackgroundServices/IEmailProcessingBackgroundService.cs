@@ -2,9 +2,9 @@
 
 public interface IEmailProcessingBackgroundService : IDisposable
 {
+    Task? ExecuteTask { get; }
     Task StartAsync(CancellationToken cancellationToken);
     Task StopAsync(CancellationToken cancellationToken);
-    Task? ExecuteTask { get; }
     void StartProcessing();
     Task ProcessEmailsAsync(CancellationToken cancellationToken = default);
 }

@@ -24,7 +24,7 @@ try
     builder.Host.UseSerilog(); // Add services to the container.
     builder.Services.AddControllers(); // Add Entity Framework and SQLite
     builder.Services.AddDbContext<ProjectRadarContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));    // Add Services
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))); // Add Services
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IEmailParserService, EmailParserService>();
@@ -34,7 +34,7 @@ try
     builder.Services.AddTransient<IGuidService, GuidService>();
     builder.Services.AddTransient<IDelayService, DelayService>();
     builder.Services.AddTransient<IDateTimeService, DateTimeService>();
-    
+
     // Add Background Services
     builder.Services.AddHostedService<EmailProcessingBackgroundService>();
     builder.Services.AddCors(options =>

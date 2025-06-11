@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
 using ntlt.projectradar.backend.Common;
 using ntlt.projectradar.backend.Data;
 using ntlt.projectradar.backend.Models;
@@ -12,17 +11,12 @@ namespace ntlt.projectradar.backend.tests.Services;
 [TestFixture]
 public class EmailParserServiceTests
 {
-    private ProjectRadarContext _context = null!;
-    private ILogger<EmailParserService> _logger = null!;
-    private IGuidService _mockGuidService = null!;
-    private EmailParserService _service = null!;
-
     [SetUp]
     public void Setup()
     {
         // Create In-Memory database with unique name for each test
         var options = new DbContextOptionsBuilder<ProjectRadarContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
         _context = new ProjectRadarContext(options);
@@ -42,7 +36,10 @@ public class EmailParserServiceTests
         _context.Dispose();
     }
 
-    #region ParseAndPersistEmailAsync Tests
+    private ProjectRadarContext _context = null!;
+    private ILogger<EmailParserService> _logger = null!;
+    private IGuidService _mockGuidService = null!;
+    private EmailParserService _service = null!;
 
     [Test]
     public async Task ParseAndPersistEmailAsync_WithValidEmail_ShouldCreateEmailDetails()
@@ -175,14 +172,16 @@ public class EmailParserServiceTests
             .Where(ea => ea.EmailDetailsId == existingEmailDetails.Id)
             .ToListAsync();
         Assert.That(orphanedAttachments.Count, Is.EqualTo(0));
-    }    [Test]
+    }
+
+    [Test]
     public void ParseAndPersistEmailAsync_WithInvalidEmailContent_ShouldThrowException()
     {
         // Arrange
         var rawLead = CreateTestRawLead();
-        rawLead.OriginalContent = "Invalid email content without proper headers";        // Act & Assert
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(
-            async () => await _service.ParseAndPersistEmailAsync(rawLead));
+        rawLead.OriginalContent = "Invalid email content without proper headers"; // Act & Assert
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await _service.ParseAndPersistEmailAsync(rawLead));
 
         Assert.That(ex.Message, Does.Contain("Failed to parse email content"));
     }
@@ -205,10 +204,6 @@ public class EmailParserServiceTests
         Assert.That(result.EmailSubject, Is.EqualTo(string.Empty)); // No subject in minimal email
     }
 
-    #endregion
-
-    #region Helper Methods
-
     private RawLead CreateTestRawLead()
     {
         return new RawLead
@@ -223,44 +218,42 @@ public class EmailParserServiceTests
     private string CreateValidEmailContent()
     {
         return """
-            From: Test Sender <test@example.com>
-            To: Test Recipient <recipient@example.com>
-            Subject: Test Project Inquiry
-            Date: Wed, 11 Jun 2025 10:00:00 +0200
-            Content-Type: text/plain; charset=utf-8
+               From: Test Sender <test@example.com>
+               To: Test Recipient <recipient@example.com>
+               Subject: Test Project Inquiry
+               Date: Wed, 11 Jun 2025 10:00:00 +0200
+               Content-Type: text/plain; charset=utf-8
 
-            This is a test email content.
-            
-            We are looking for a software development project.
-            
-            Best regards,
-            Test Sender
-            """;
+               This is a test email content.
+
+               We are looking for a software development project.
+
+               Best regards,
+               Test Sender
+               """;
     }
 
     private string CreateEmailWithAttachment()
     {
         return """
-            From: Test Sender <test@example.com>
-            To: Test Recipient <recipient@example.com>
-            Subject: Test Project with Attachment
-            Date: Wed, 11 Jun 2025 10:00:00 +0200
-            MIME-Version: 1.0
-            Content-Type: multipart/mixed; boundary="boundary123"
+               From: Test Sender <test@example.com>
+               To: Test Recipient <recipient@example.com>
+               Subject: Test Project with Attachment
+               Date: Wed, 11 Jun 2025 10:00:00 +0200
+               MIME-Version: 1.0
+               Content-Type: multipart/mixed; boundary="boundary123"
 
-            --boundary123
-            Content-Type: text/plain; charset=utf-8
+               --boundary123
+               Content-Type: text/plain; charset=utf-8
 
-            This email has an attachment.
+               This email has an attachment.
 
-            --boundary123
-            Content-Type: text/plain; name="test.txt"
-            Content-Disposition: attachment; filename="test.txt"
+               --boundary123
+               Content-Type: text/plain; name="test.txt"
+               Content-Disposition: attachment; filename="test.txt"
 
-            This is test attachment content.
-            --boundary123--
-            """;
+               This is test attachment content.
+               --boundary123--
+               """;
     }
-
-    #endregion
 }

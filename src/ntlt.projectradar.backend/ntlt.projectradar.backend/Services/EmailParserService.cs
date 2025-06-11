@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using ntlt.projectradar.backend.Common;
@@ -13,8 +14,8 @@ public class EmailParserService : IEmailParserService
     private readonly ILogger<EmailParserService> _logger;
 
     public EmailParserService(
-        ProjectRadarContext context, 
-        IGuidService guidService, 
+        ProjectRadarContext context,
+        IGuidService guidService,
         ILogger<EmailParserService> logger)
     {
         _context = context;
@@ -22,7 +23,8 @@ public class EmailParserService : IEmailParserService
         _logger = logger;
     }
 
-    public async Task<EmailDetails> ParseAndPersistEmailAsync(RawLead rawLead, CancellationToken cancellationToken = default)
+    public async Task<EmailDetails> ParseAndPersistEmailAsync(RawLead rawLead,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Starting email parsing for RawLead {RawLeadId}", rawLead.Id);
 
@@ -54,7 +56,7 @@ public class EmailParserService : IEmailParserService
     {
         try
         {
-            using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(emlContent));
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(emlContent));
             var message = await MimeMessage.LoadAsync(stream);
             return message;
         }
@@ -74,7 +76,7 @@ public class EmailParserService : IEmailParserService
 
         if (existingEmailDetails != null)
         {
-            _logger.LogInformation("Deleting existing EmailDetails {EmailDetailsId} for RawLead {RawLeadId}", 
+            _logger.LogInformation("Deleting existing EmailDetails {EmailDetailsId} for RawLead {RawLeadId}",
                 existingEmailDetails.Id, rawLeadId);
 
             // Delete existing attachments first
@@ -94,7 +96,8 @@ public class EmailParserService : IEmailParserService
         }
     }
 
-    private async Task<EmailDetails> CreateEmailDetailsAsync(Guid rawLeadId, MimeMessage message, CancellationToken cancellationToken)
+    private async Task<EmailDetails> CreateEmailDetailsAsync(Guid rawLeadId, MimeMessage message,
+        CancellationToken cancellationToken)
     {
         var emailDetails = new EmailDetails
         {
@@ -112,7 +115,7 @@ public class EmailParserService : IEmailParserService
         _context.EmailDetails.Add(emailDetails);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _logger.LogDebug("Created EmailDetails {EmailDetailsId} for RawLead {RawLeadId}", 
+        _logger.LogDebug("Created EmailDetails {EmailDetailsId} for RawLead {RawLeadId}",
             emailDetails.Id, rawLeadId);
 
         return emailDetails;
@@ -144,12 +147,12 @@ public class EmailParserService : IEmailParserService
         }
     }
 
-    private async Task ExtractAndPersistAttachmentsAsync(Guid emailDetailsId, MimeMessage message, CancellationToken cancellationToken)
+    private async Task ExtractAndPersistAttachmentsAsync(Guid emailDetailsId, MimeMessage message,
+        CancellationToken cancellationToken)
     {
         var attachments = new List<EmailAttachment>();
 
         foreach (var attachment in message.Attachments)
-        {
             try
             {
                 var emailAttachment = new EmailAttachment
@@ -166,17 +169,16 @@ public class EmailParserService : IEmailParserService
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Failed to extract attachment {FileName} for EmailDetails {EmailDetailsId}", 
+                _logger.LogWarning(ex, "Failed to extract attachment {FileName} for EmailDetails {EmailDetailsId}",
                     attachment.ContentDisposition?.FileName, emailDetailsId);
             }
-        }
 
         if (attachments.Any())
         {
             _context.EmailAttachments.AddRange(attachments);
             await _context.SaveChangesAsync(cancellationToken);
-            
-            _logger.LogDebug("Persisted {AttachmentCount} attachments for EmailDetails {EmailDetailsId}", 
+
+            _logger.LogDebug("Persisted {AttachmentCount} attachments for EmailDetails {EmailDetailsId}",
                 attachments.Count, emailDetailsId);
         }
     }
@@ -191,6 +193,7 @@ public class EmailParserService : IEmailParserService
                 await part.Content.DecodeToAsync(memory);
                 return Convert.ToBase64String(memory.ToArray());
             }
+
             return string.Empty;
         }
         catch (Exception ex)

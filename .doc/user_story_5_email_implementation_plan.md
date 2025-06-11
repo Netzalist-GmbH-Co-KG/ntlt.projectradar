@@ -57,8 +57,8 @@
 ## Frontend Implementation
 
 ### 8. API Service Erweiterung
-- [ ] apiService.ts um Email-Details Funktionen erweitern
-- [ ] TypeScript Interfaces für EmailDetails und EmailAttachment
+- [ ] apiService.ts um Email Funktionen erweitern
+- [ ] TypeScript Interfaces für EmailDetails und EmailAttachments sowie Listen
 - [ ] Error Handling für neue Endpoints
 
 ### 9. Routing & Pages

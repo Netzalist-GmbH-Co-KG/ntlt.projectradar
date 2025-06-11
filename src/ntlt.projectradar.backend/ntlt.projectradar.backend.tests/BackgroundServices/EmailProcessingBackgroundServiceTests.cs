@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
 using ntlt.projectradar.backend.BackgroundServices;
 using ntlt.projectradar.backend.Common;
 using ntlt.projectradar.backend.Models;
@@ -12,15 +11,7 @@ namespace ntlt.projectradar.backend.tests.BackgroundServices;
 [TestFixture]
 public class EmailProcessingBackgroundServiceTests
 {
-    private IServiceScopeFactory _serviceScopeFactory = null!;
-    private IServiceScope _serviceScope = null!;
-    private IServiceProvider _serviceProvider = null!;
-    private IEmailParserService _emailParserService = null!;
-    private IRawLeadService _rawLeadService = null!;
-    private IDelayService _delayService = null!;
-    private ILogger<EmailProcessingBackgroundService> _logger = null!;
-    private IEmailProcessingTrigger _emailProcessingTrigger = null!;
-    private EmailProcessingBackgroundService _service = null!;    [SetUp]
+    [SetUp]
     public void Setup()
     {
         // Create mock services
@@ -48,14 +39,24 @@ public class EmailProcessingBackgroundServiceTests
             _emailProcessingTrigger,
             _delayService,
             _logger);
-    }[TearDown]
+    }
+
+    [TearDown]
     public void TearDown()
     {
         _service.Dispose();
         _serviceScope?.Dispose();
     }
 
-    #region StartProcessing Tests
+    private IServiceScopeFactory _serviceScopeFactory = null!;
+    private IServiceScope _serviceScope = null!;
+    private IServiceProvider _serviceProvider = null!;
+    private IEmailParserService _emailParserService = null!;
+    private IRawLeadService _rawLeadService = null!;
+    private IDelayService _delayService = null!;
+    private ILogger<EmailProcessingBackgroundService> _logger = null!;
+    private IEmailProcessingTrigger _emailProcessingTrigger = null!;
+    private EmailProcessingBackgroundService _service = null!;
 
     [Test]
     public void StartProcessing_ShouldTriggerProcessing()
@@ -66,10 +67,6 @@ public class EmailProcessingBackgroundServiceTests
         // Assert - No exception should be thrown
         Assert.Pass("StartProcessing executed without exception");
     }
-
-    #endregion
-
-    #region ProcessEmailsAsync Tests
 
     [Test]
     public async Task ProcessEmailsAsync_WithNoProcessingRawLeads_ShouldCompleteWithoutProcessing()
@@ -83,7 +80,8 @@ public class EmailProcessingBackgroundServiceTests
 
         // Assert
         await _rawLeadService.Received(1).GetRawLeadsAsync(ProcessingStatus.Processing, Arg.Any<CancellationToken>());
-        await _emailParserService.DidNotReceive().ParseAndPersistEmailAsync(Arg.Any<RawLead>(), Arg.Any<CancellationToken>());
+        await _emailParserService.DidNotReceive()
+            .ParseAndPersistEmailAsync(Arg.Any<RawLead>(), Arg.Any<CancellationToken>());
     }
 
     [Test]
@@ -99,7 +97,8 @@ public class EmailProcessingBackgroundServiceTests
         _emailParserService.ParseAndPersistEmailAsync(rawLead, Arg.Any<CancellationToken>())
             .Returns(emailDetails);
 
-        _rawLeadService.UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>())
+        _rawLeadService
+            .UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>())
             .Returns(true);
 
         // Act
@@ -108,7 +107,8 @@ public class EmailProcessingBackgroundServiceTests
         // Assert
         await _rawLeadService.Received(1).GetRawLeadsAsync(ProcessingStatus.Processing, Arg.Any<CancellationToken>());
         await _emailParserService.Received(1).ParseAndPersistEmailAsync(rawLead, Arg.Any<CancellationToken>());
-        await _rawLeadService.Received(1).UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>());
+        await _rawLeadService.Received(1)
+            .UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>());
     }
 
     [Test]
@@ -127,7 +127,8 @@ public class EmailProcessingBackgroundServiceTests
         _emailParserService.ParseAndPersistEmailAsync(Arg.Any<RawLead>(), Arg.Any<CancellationToken>())
             .Returns(args => CreateTestEmailDetails(((RawLead)args[0]).Id));
 
-        _rawLeadService.UpdateProcessingStatusAsync(Arg.Any<Guid>(), ProcessingStatus.Completed, Arg.Any<CancellationToken>())
+        _rawLeadService
+            .UpdateProcessingStatusAsync(Arg.Any<Guid>(), ProcessingStatus.Completed, Arg.Any<CancellationToken>())
             .Returns(true);
 
         // Act
@@ -135,8 +136,10 @@ public class EmailProcessingBackgroundServiceTests
 
         // Assert
         await _rawLeadService.Received(1).GetRawLeadsAsync(ProcessingStatus.Processing, Arg.Any<CancellationToken>());
-        await _emailParserService.Received(3).ParseAndPersistEmailAsync(Arg.Any<RawLead>(), Arg.Any<CancellationToken>());
-        await _rawLeadService.Received(3).UpdateProcessingStatusAsync(Arg.Any<Guid>(), ProcessingStatus.Completed, Arg.Any<CancellationToken>());
+        await _emailParserService.Received(3)
+            .ParseAndPersistEmailAsync(Arg.Any<RawLead>(), Arg.Any<CancellationToken>());
+        await _rawLeadService.Received(3)
+            .UpdateProcessingStatusAsync(Arg.Any<Guid>(), ProcessingStatus.Completed, Arg.Any<CancellationToken>());
     }
 
     [Test]
@@ -159,8 +162,10 @@ public class EmailProcessingBackgroundServiceTests
 
         // Assert
         await _emailParserService.Received(1).ParseAndPersistEmailAsync(rawLead, Arg.Any<CancellationToken>());
-        await _rawLeadService.Received(1).UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Failed, Arg.Any<CancellationToken>());
-        await _rawLeadService.DidNotReceive().UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>());
+        await _rawLeadService.Received(1)
+            .UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Failed, Arg.Any<CancellationToken>());
+        await _rawLeadService.DidNotReceive()
+            .UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>());
     }
 
     [Test]
@@ -176,7 +181,8 @@ public class EmailProcessingBackgroundServiceTests
         _emailParserService.ParseAndPersistEmailAsync(rawLead, Arg.Any<CancellationToken>())
             .Returns(emailDetails);
 
-        _rawLeadService.UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>())
+        _rawLeadService
+            .UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>())
             .Returns(Task.FromException<bool>(new InvalidOperationException("Database error")));
 
         // Act & Assert - Should not throw exception
@@ -184,7 +190,8 @@ public class EmailProcessingBackgroundServiceTests
 
         // Assert
         await _emailParserService.Received(1).ParseAndPersistEmailAsync(rawLead, Arg.Any<CancellationToken>());
-        await _rawLeadService.Received(1).UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>());
+        await _rawLeadService.Received(1)
+            .UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>());
     }
 
     [Test]
@@ -199,12 +206,9 @@ public class EmailProcessingBackgroundServiceTests
 
         // Assert
         await _rawLeadService.Received(1).GetRawLeadsAsync(ProcessingStatus.Processing, Arg.Any<CancellationToken>());
-        await _emailParserService.DidNotReceive().ParseAndPersistEmailAsync(Arg.Any<RawLead>(), Arg.Any<CancellationToken>());
+        await _emailParserService.DidNotReceive()
+            .ParseAndPersistEmailAsync(Arg.Any<RawLead>(), Arg.Any<CancellationToken>());
     }
-
-    #endregion
-
-    #region ExecuteTask Tests
 
     [Test]
     public async Task ExecuteTask_ShouldBeAvailableAfterStart()
@@ -214,18 +218,14 @@ public class EmailProcessingBackgroundServiceTests
 
         // Act
         var startTask = _service.StartAsync(cts.Token);
-        
+
         // Assert
         Assert.That(_service.ExecuteTask, Is.Not.Null);
-        
+
         // Cleanup
         cts.Cancel();
         await startTask;
     }
-
-    #endregion
-
-    #region Background Service Integration Tests
 
     [Test]
     public async Task BackgroundService_WhenTriggered_ShouldProcessEmails()
@@ -240,20 +240,21 @@ public class EmailProcessingBackgroundServiceTests
         _emailParserService.ParseAndPersistEmailAsync(rawLead, Arg.Any<CancellationToken>())
             .Returns(emailDetails);
 
-        _rawLeadService.UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>())
+        _rawLeadService
+            .UpdateProcessingStatusAsync(rawLead.Id, ProcessingStatus.Completed, Arg.Any<CancellationToken>())
             .Returns(true);
 
         using var cts = new CancellationTokenSource();
 
         // Act
         var startTask = _service.StartAsync(cts.Token);
-        
+
         // Trigger processing
         _service.StartProcessing();
-        
+
         // Give some time for processing
         await Task.Delay(100);
-        
+
         // Stop service
         cts.Cancel();
         await startTask;
@@ -261,10 +262,6 @@ public class EmailProcessingBackgroundServiceTests
         // Assert
         await _rawLeadService.Received().GetRawLeadsAsync(ProcessingStatus.Processing, Arg.Any<CancellationToken>());
     }
-
-    #endregion
-
-    #region Helper Methods
 
     private static RawLead CreateTestRawLead(Guid? id = null)
     {
@@ -292,6 +289,4 @@ public class EmailProcessingBackgroundServiceTests
             CreatedAt = DateTime.UtcNow
         };
     }
-
-    #endregion
 }

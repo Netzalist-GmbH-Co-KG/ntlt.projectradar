@@ -1,7 +1,7 @@
 namespace ntlt.projectradar.backend.DTOs;
 
 /// <summary>
-/// DTO for email attachment details
+///     DTO for email attachment details
 /// </summary>
 public class EmailAttachmentDto
 {
@@ -13,7 +13,7 @@ public class EmailAttachmentDto
 }
 
 /// <summary>
-/// DTO for detailed email view including attachments
+///     DTO for detailed email view including attachments
 /// </summary>
 public class EmailDetailsDto
 {

@@ -18,7 +18,7 @@ public class EmailsController : ControllerBase
     }
 
     /// <summary>
-    /// Get paginated list of emails ordered by date descending
+    ///     Get paginated list of emails ordered by date descending
     /// </summary>
     /// <param name="page">Page number (default: 1)</param>
     /// <param name="pageSize">Number of emails per page (default: 100, max: 100)</param>
@@ -26,8 +26,8 @@ public class EmailsController : ControllerBase
     /// <returns>Paginated email list</returns>
     [HttpGet]
     public async Task<ActionResult<EmailListResponseDto>> GetEmails(
-        [FromQuery] int page = 1, 
-        [FromQuery] int pageSize = 100, 
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 100,
         CancellationToken cancellationToken = default)
     {
         try
@@ -45,20 +45,21 @@ public class EmailsController : ControllerBase
     }
 
     /// <summary>
-    /// Get detailed information for a specific email
+    ///     Get detailed information for a specific email
     /// </summary>
     /// <param name="id">Email ID</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Email details</returns>
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<EmailDetailsDto>> GetEmailById(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<EmailDetailsDto>> GetEmailById(Guid id,
+        CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("GET /api/emails/{EmailId} called", id);
 
             var email = await _emailService.GetEmailByIdAsync(id, cancellationToken);
-            
+
             if (email == null)
             {
                 _logger.LogWarning("Email with ID {EmailId} not found", id);
@@ -75,7 +76,7 @@ public class EmailsController : ControllerBase
     }
 
     /// <summary>
-    /// Download an email attachment
+    ///     Download an email attachment
     /// </summary>
     /// <param name="attachmentId">Attachment ID</param>
     /// <param name="cancellationToken">Cancellation token</param>
@@ -88,14 +89,16 @@ public class EmailsController : ControllerBase
             _logger.LogInformation("GET /api/emails/attachments/{AttachmentId} called", attachmentId);
 
             var attachment = await _emailService.GetAttachmentByIdAsync(attachmentId, cancellationToken);
-            
+
             if (attachment == null)
             {
                 _logger.LogWarning("Attachment with ID {AttachmentId} not found", attachmentId);
                 return NotFound($"Attachment with ID {attachmentId} not found");
-            }            return File(
-                attachment.AttachmentContent, 
-                attachment.AttachmentMimeType, 
+            }
+
+            return File(
+                attachment.AttachmentContent,
+                attachment.AttachmentMimeType,
                 attachment.AttachmentFilename);
         }
         catch (Exception ex)
