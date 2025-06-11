@@ -7,6 +7,7 @@ namespace ntlt.projectradar.backend.BackgroundServices;
 public class EmailProcessingBackgroundService : BackgroundService, IEmailProcessingBackgroundService
 {
     private readonly IEmailParserService _parserService;
+    private readonly IEmailProcessingTrigger _emailProcessingTrigger;
     private readonly IRawLeadService _rawLeadService;
     private readonly IDelayService _delayService;
     private readonly ILogger<EmailProcessingBackgroundService> _logger;
@@ -15,12 +16,15 @@ public class EmailProcessingBackgroundService : BackgroundService, IEmailProcess
 
     public EmailProcessingBackgroundService(
         IEmailParserService parserService, 
+        IEmailProcessingTrigger emailProcessingTrigger,
         IRawLeadService rawLeadService,
         IDelayService delayService, 
         ILogger<EmailProcessingBackgroundService> logger)
     {
         _parserService = parserService;
+        _emailProcessingTrigger = emailProcessingTrigger;
         _rawLeadService = rawLeadService;
+        _emailProcessingTrigger.OnProcessingTriggered += (_,_) => StartProcessing();
         _delayService = delayService;
         _logger = logger;
     }

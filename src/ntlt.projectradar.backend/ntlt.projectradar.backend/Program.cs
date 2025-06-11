@@ -27,11 +27,14 @@ try
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));    // Add Services
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
     builder.Services.AddScoped<IEmailParserService, EmailParserService>();
+    builder.Services.AddScoped<IEmailProcessingTrigger, EmailProcessingTrigger>();
+
+    // Add Common Services
     builder.Services.AddTransient<IGuidService, GuidService>();
     builder.Services.AddTransient<IDelayService, DelayService>();
+    builder.Services.AddTransient<IDateTimeService, DateTimeService>();
     
     // Add Background Services
-    builder.Services.AddSingleton<IEmailProcessingBackgroundService, EmailProcessingBackgroundService>();
     builder.Services.AddHostedService<EmailProcessingBackgroundService>();
     builder.Services.AddCors(options =>
     {

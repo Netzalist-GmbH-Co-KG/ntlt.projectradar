@@ -16,6 +16,7 @@ public class EmailProcessingBackgroundServiceTests
     private IDelayService _delayService = null!;
     private ILogger<EmailProcessingBackgroundService> _logger = null!;
     private EmailProcessingBackgroundService _service = null!;
+    private IEmailProcessingTrigger _emailProcessingTrigger = null!;
 
     [SetUp]
     public void Setup()
@@ -24,9 +25,11 @@ public class EmailProcessingBackgroundServiceTests
         _rawLeadService = Substitute.For<IRawLeadService>();
         _delayService = Substitute.For<IDelayService>();
         _logger = Substitute.For<ILogger<EmailProcessingBackgroundService>>();
+        _emailProcessingTrigger = Substitute.For<IEmailProcessingTrigger>();
 
         _service = new EmailProcessingBackgroundService(
             _emailParserService,
+            _emailProcessingTrigger,
             _rawLeadService,
             _delayService,
             _logger);
