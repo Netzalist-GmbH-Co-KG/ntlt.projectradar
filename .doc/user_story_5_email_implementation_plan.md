@@ -85,22 +85,16 @@
 - [x] Plain Text fallback wenn kein HTML verfügbar
 
 ### 13. UI/UX Finalisierung
-- [ ] Mobile-responsive Layout
-- [ ] Error Handling für nicht existierende IDs
-- [ ] Loading States für alle API Calls
-- [ ] Kompakte, lesbare Darstellung
+- [X] Mobile-responsive Layout
+- [X] Error Handling für nicht existierende IDs
+- [X] Loading States für alle API Calls
+- [X] Kompakte, lesbare Darstellung
 
 ## Testing & Validation
 
 ### 14. Backend Tests
-- [ ] EmailParserService Unit Tests
-- [ ] BackgroundService Integration Tests
-- [ ] Controller Tests für neue Endpoints
-
-### 15. Frontend Tests
-- [ ] Component Tests für Email-Viewer
-- [ ] Integration Tests für Email-Navigation
-- [ ] End-to-End Tests für kompletten Workflow
+- [X] EmailParserService Unit Tests
+- [X] BackgroundService Integration Tests
 
 ## Technische Notizen
 
