@@ -4,7 +4,6 @@ namespace ntlt.projectradar.backend.Models;
 
 public class ProjectEmails
 {
-    [Key] public Guid Id { get; set; }
-    [Key] public Guid ProjectId { get; set; }
-    [Key] public Guid EmailId { get; set; }
+    public Guid ProjectId { get; set; }
+    public Guid EmailId { get; set; }
 }

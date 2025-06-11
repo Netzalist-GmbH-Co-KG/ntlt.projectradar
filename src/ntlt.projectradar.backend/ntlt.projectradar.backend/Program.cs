@@ -29,6 +29,7 @@ try
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IEmailParserService, EmailParserService>();
+    builder.Services.AddScoped<IProjectDetailsService, ProjectDetailsService>();
     builder.Services.AddSingleton<IEmailProcessingTrigger, EmailProcessingTrigger>();
 
     // Add AI Services
