@@ -57,14 +57,14 @@
 ## Frontend Implementation
 
 ### 8. API Service Erweiterung
-- [ ] apiService.ts um Email Funktionen erweitern
-- [ ] TypeScript Interfaces für EmailDetails und EmailAttachments sowie Listen
-- [ ] Error Handling für neue Endpoints
+- [x] apiService.ts um Email Funktionen erweitern
+- [x] TypeScript Interfaces für EmailDetails und EmailAttachments sowie Listen
+- [x] Error Handling für neue Endpoints
+- [x] Email utilities für Formatierung und Display-Helper
+- [x] Custom React Hooks für Email-Datenmanagement
 
 ### 9. Routing & Pages
 - [ ] `/emails` Route erstellen (Email-Client Layout)
-- [ ] `/emails/[id]` Route für Detail-Ansicht
-- [ ] Navigation zwischen Listen- und Detail-View
 
 ### 10. Email List Component
 - [ ] Kompakte Liste mit Autoscroller (100 Emails pro Batch)

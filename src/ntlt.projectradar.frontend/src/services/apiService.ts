@@ -21,7 +21,56 @@ export interface RawLead {
   id: string;
   originalContent: string;
   uploadedAt: string;
-  processingStatus: 'New' | 'Processing' | 'Completed' | 'Failed';
+  processingStatus: 'Processing' | 'Completed' | 'Failed';
+}
+
+// Email-related interfaces
+export interface EmailAttachmentListDto {
+  id: string;
+  attachmentFilename: string;
+  attachmentMimeType: string;
+}
+
+export interface EmailListDto {
+  id: string;
+  emailFrom: string;
+  emailTo: string;
+  emailSubject: string;
+  emailDate: string | null;
+  createdAt: string;
+  hasAttachments: boolean;
+  attachments: EmailAttachmentListDto[];
+}
+
+export interface EmailListResponseDto {
+  emails: EmailListDto[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface EmailAttachmentDto {
+  id: string;
+  attachmentFilename: string;
+  attachmentMimeType: string;
+  attachmentContent: string;
+  createdAt: string;
+}
+
+export interface EmailDetailsDto {
+  id: string;
+  rawLeadId: string;
+  emailFrom: string;
+  emailTo: string;
+  emailSubject: string;
+  emailDate: string | null;
+  emailBodyText: string;
+  emailBodyHtml: string;
+  createdAt: string;
+  attachments: EmailAttachmentDto[];
 }
 
 export interface ApiError {
@@ -84,10 +133,9 @@ class ApiService {
     }
     return this.fetchWithErrorHandling<RawLead[]>(url.toString());
   }
-
   async updateProcessingStatus(
     id: string,
-    status: 'New' | 'Processing' | 'Completed' | 'Failed'
+    status: 'Processing' | 'Completed' | 'Failed'
   ): Promise<void> {
     await this.fetchWithErrorHandling<void>(`${API_BASE_URL}/api/rawleads/${id}/status`, {
       method: 'PATCH',
@@ -99,6 +147,58 @@ class ApiService {
     await this.fetchWithErrorHandling<void>(`${API_BASE_URL}/api/rawleads/${id}`, {
       method: 'DELETE',
     });
+  }
+
+  // Email API methods
+  async getEmails(page: number = 1, pageSize: number = 100): Promise<EmailListResponseDto> {
+    const url = new URL(`${API_BASE_URL}/api/emails`);
+    url.searchParams.append('page', page.toString());
+    url.searchParams.append('pageSize', pageSize.toString());
+    
+    return this.fetchWithErrorHandling<EmailListResponseDto>(url.toString());
+  }
+
+  async getEmailById(id: string): Promise<EmailDetailsDto> {
+    return this.fetchWithErrorHandling<EmailDetailsDto>(`${API_BASE_URL}/api/emails/${id}`);
+  }
+
+  async downloadAttachment(attachmentId: string): Promise<Blob> {
+    const response = await fetch(`${API_BASE_URL}/api/emails/attachments/${attachmentId}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      const errorData: ApiError = await response.json().catch(() => ({
+        error: `HTTP ${response.status}: ${response.statusText}`,
+      }));
+      throw new Error(errorData.error || `Download failed with status ${response.status}`);
+    }
+
+    return response.blob();
+  }
+
+  // Helper method to download attachment with proper filename
+  async downloadAttachmentAsFile(attachmentId: string, filename: string): Promise<void> {
+    try {
+      const blob = await this.downloadAttachment(attachmentId);
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      throw error;
+    }
   }
 }
 
