@@ -1,16 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { PencilIcon, CurrencyEuroIcon, ClockIcon, UserIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
-import type { Project } from '../../types/project';
+import type { Project, ProjectUpdateFormData } from '../../types/project';
 import { LoadingCard } from '../Loading/LoadingComponents';
 import { ErrorMessage } from '../Error/ErrorComponents';
+import { ProjectDetailsEdit } from './ProjectDetailsEdit';
 
 interface ProjectDetailsProps {
   project: Project | null;
   isLoading?: boolean;
   error?: string | null;
-  onEditToggle?: () => void;
+  onUpdateProject?: (id: string, data: ProjectUpdateFormData) => Promise<boolean>;
   className?: string;
 }
 
@@ -22,10 +23,32 @@ export function ProjectDetails({
   project, 
   isLoading = false, 
   error = null, 
-  onEditToggle,
+  onUpdateProject,
   className = '' 
 }: ProjectDetailsProps) {
-  // Loading state
+  // Edit mode state
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Handle edit toggle
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
+
+  // Handle save from edit component
+  const handleSave = async (data: ProjectUpdateFormData): Promise<boolean> => {
+    if (!project || !onUpdateProject) return false;
+    
+    const success = await onUpdateProject(project.id, data);
+    if (success) {
+      setIsEditing(false);
+    }
+    return success;
+  };
+
+  // Handle cancel editing
+  const handleCancel = () => {
+    setIsEditing(false);
+  };  // Loading state
   if (isLoading) {
     return (
       <div className={`bg-white rounded-lg shadow-sm border border-neutral-200 p-6 ${className}`}>
@@ -59,6 +82,18 @@ export function ProjectDetails({
     );
   }
 
+  // Show edit component if in editing mode
+  if (isEditing) {
+    return (
+      <ProjectDetailsEdit
+        project={project}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        className={className}
+      />
+    );
+  }
+
   // Format display values
   const formatBudget = (min?: number | null, max?: number | null) => {
     if (!min && !max) return 'Not specified';
@@ -89,11 +124,10 @@ export function ProjectDetails({
             <p className="text-sm text-neutral-500 mt-1">
               via {project.agencyName}
             </p>
-          )}
-        </div>
-        {onEditToggle && (
+          )}        </div>
+        {onUpdateProject && (
           <button
-            onClick={onEditToggle}
+            onClick={handleEditToggle}
             className="ml-4 p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-colors"
             aria-label="Edit project"
           >
