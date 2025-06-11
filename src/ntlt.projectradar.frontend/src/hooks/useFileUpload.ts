@@ -13,7 +13,7 @@ interface UploadState {
 }
 
 export function useFileUpload() {
-  const { addProject, setError } = useApp();
+  const { setError } = useApp();
   const { showSuccess, showError } = useToast();
   
   const [uploadState, setUploadState] = useState<UploadState>({
@@ -40,19 +40,7 @@ export function useFileUpload() {
         try {
           // Upload file to backend API
           const uploadResult = await apiService.uploadEmlFile(file);
-          
-          // Create project entry for frontend state
-          const mockProject = {
-            id: uploadResult.id,
-            name: `Project from ${file.name.replace('.eml', '')}`,
-            status: 'pending' as const,
-            description: `Uploaded EML file: ${file.name}`,
-            createdAt: new Date(uploadResult.uploadedAt).toISOString().split('T')[0],
-            updatedAt: new Date(uploadResult.uploadedAt).toISOString().split('T')[0],
-          };
 
-          addProject(mockProject);
-          
           setUploadState(prev => ({
             ...prev,
             uploadProgress: ((i + 1) / files.length) * 100,
@@ -124,7 +112,7 @@ export function useFileUpload() {
         }
       );
     }
-  }, [addProject, showSuccess, showError, setError]);
+  }, [showSuccess, showError, setError]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();

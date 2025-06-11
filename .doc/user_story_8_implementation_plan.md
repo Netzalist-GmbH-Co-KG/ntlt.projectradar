@@ -36,9 +36,9 @@ Implementierung einer vollständigen Projekt-Verwaltung mit echten Backend-Daten
 
 ### 4. AppContext Mock-Daten Entfernung
 **Datei:** `src/contexts/AppContext.tsx`
-- [ ] Alle Mock-Daten und Project-State entfernen
-- [ ] AppContext vereinfachen (nur noch gemeinsame UI-States)
-- [ ] Project-spezifische Actions entfernen
+- [x] Alle Mock-Daten und Project-State entfernen
+- [x] AppContext vereinfachen (nur noch gemeinsame UI-States)
+- [x] Project-spezifische Actions entfernen
 
 ### 5. ProjectDetails Komponente (ReadOnly)
 **Datei:** `src/components/Project/ProjectDetails.tsx` (neu)

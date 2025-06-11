@@ -222,21 +222,21 @@ export function useProjects() {
         if (end && project.createdAt > end) return false;
         return true;
       });
-    }
-
-    // Apply sorting
+    }    // Apply sorting
     filtered.sort((a, b) => {
       const { field, direction } = state.sortConfig;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let aValue: any = a[field];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let bValue: any = b[field];
 
       // Handle different data types
       if (field === 'createdAt') {
-        aValue = a.createdAt.getTime();
-        bValue = b.createdAt.getTime();
+        aValue = (a.createdAt as Date).getTime();
+        bValue = (b.createdAt as Date).getTime();
       } else if (typeof aValue === 'string') {
-        aValue = aValue?.toLowerCase() || '';
-        bValue = bValue?.toLowerCase() || '';
+        aValue = (aValue as string)?.toLowerCase() || '';
+        bValue = (bValue as string)?.toLowerCase() || '';
       } else if (typeof aValue === 'number') {
         aValue = aValue || 0;
         bValue = bValue || 0;
