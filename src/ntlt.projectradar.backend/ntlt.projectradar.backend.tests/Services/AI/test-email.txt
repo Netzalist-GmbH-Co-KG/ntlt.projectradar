@@ -1,0 +1,88 @@
+Guten Tag Tobias Waggoner,
+
+gerne möchte ich die Gelegenheit nutzen, Ihnen ein interessantes Projektangebot zu unterbreiten.
+
+Einsatzort: Remote und ab und an nach München vor Ort
+Geplant ist eine initiale Begleitung von 4 bis 8 Wochen mit Option auf Verlängerung je nach Projektverlauf, wobei der gesamte Aufwand bei ca. 2 Wochen gesehen wird
+
+Starttermin:
+Die Beantragung dauert im Durchschnitt 10 Tage. 
+Voraussichtliche Einsatzdauer:
+01.06.2025  31.07.2025, ca. 10 Tage in diesem Zeitraum
+
+Inhaltlich:
+-Externer Berater (m/w/d) für Einführung von GitHub Copilot in C#/.NET-Projekt für den Kunden
+-Gesucht wird ein GitHub Copilot Experten (Tech Lead Level), der bei der Einführung und dem effektiven Einsatz von Github Copilot in der komplexen Softwareplattform unterstützt.
+Ziel ist es, Potenziale zur Produktivitätssteigerung durch GitHub Copilot zu identifizieren, eine passende Einführungs- und Coachingstrategie zu entwickeln und diese durch gezielte Trainingsmaßnahmen in unser Entwicklungsteam zu tragen (Train-the-Trainer Ansatz).
+
+Ausgangslage
+ Komplexe Plattformentwicklung in C#/.NET
+ IDEs im Einsatz: Visual Studio und Visual Studio Code
+ Zielgruppe: Erfahrene Entwickler:innen aus verschiedenen Fachbereichen
+
+Möglicher Ablauf (erste Ideen):
+ Einstieg: Einführung in unsere Plattform durch interne Kollegen
+ Analyse: Bewertung der Copilot-Tauglichkeit unseres Codes und Entwicklung einer geeigneten Einführungs- und Coachingstrategie
+ Ausarbeitung Konzept (Beispielhaft): 
+o Identifikation geeigneter Use Cases für den Copilot-Einsatz
+o Notwendige Setups für den optimale Einsatz (z.B. Rules und Spezifikation)
+o Integration weiterer Tools (z.B. MCP Agents)
+ Enablement: Durchführung von Workshops oder Hackathons mit ausgewählten Entwickler:innen (Train-the-Trainer)
+
+Gewünschte Qualifikationen
+ Nachgewiesene Praxis-Erfahrung mit GitHub Copilot in komplexen Softwareprojekten
+ Sehr gute Kenntnisse in C# und .NET
+ Tiefes Verständnis moderner Software-Engineering-Praktiken
+ Erfahrung in der Durchführung von Workshops oder Entwickler-Trainings
+
+Ist das Projekt interessant für Sie? Dann freue ich mich von Ihnen zu hören!
+
+Mit freundlichen Grüßen
+
+Alexandra Mavrodis, B.A.
+Senior Recruiting Specialist
+
+HAYS     Working for your tomorrow  
+
+Hays AG
+Äußere Cramer-Klett-Straße 21
+90489 Nürnberg
+
+T: +49 911 21648 213
+F: +49 911 21648 299
+M: +49 160 6189182
+E: alexandra.mavrodis@hays.de
+
+hays.de
+
+Hays Aktiengesellschaft
+Vorstand: Alexander Heise (Vorsitzender), Markus Auer, Imke Mahner, Ivonne Gassmann, Johannes Becker
+Vorsitzender Aufsichtsrat: James Hilton
+Sitz der Gesellschaft: Mannheim
+Amtsgericht Mannheim, HRB 8258
+USt-IdNr. DE 812871896
+---------------------------------------------------------------------
+
+Diese Nachricht (inklusive aller Anhänge) ist vertraulich und kann rechtlich geschützt sein. Wenn Sie nicht der beabsichtigte Empfänger sind, sollten Sie keinen Teil davon veröffentlichen, kopieren
+ oder verwenden - bitte löschen Sie alle Kopien sofort und informieren Sie das Hays Service Team unter
+service@hays.de. 
+
+
+
+Bitte lesen Sie die Datenschutzerklärung von Hays, um mehr darüber zu erfahren, wie Hays Ihre Daten verarbeitet und wie Sie Ihre Datenschutzrechte ausüben können, einschließlich der Änderung Ihrer Marketingpräferenzen.
+ Alternativ können Sie sich auch an unser Datenschutzteam unter 
+datenschutz@hays.de wenden.
+
+This message (including any attachments) is confidential and may be legally privileged. If you are not the intended recipient,
+ you should not disclose, copy or use any part of it  please delete all copies immediately and notify the Hays Service team at
+service@hays.de. 
+
+
+
+
+Please read the Hays Privacy Policy
+ to understand more about how Hays processes your data and how to exercise your privacy rights, including changing your marketing preferences.
+Alternatively please write to our Data Protection Team at the following address:
+datenschutz@hays.de. 
+
+---------------------------------------------------------------------

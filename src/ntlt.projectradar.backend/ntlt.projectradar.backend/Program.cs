@@ -3,6 +3,7 @@ using ntlt.projectradar.backend.BackgroundServices;
 using ntlt.projectradar.backend.Common;
 using ntlt.projectradar.backend.Data;
 using ntlt.projectradar.backend.Services;
+using ntlt.projectradar.backend.Services.AI;
 using Serilog;
 
 // Configure Serilog from appsettings.json
@@ -24,11 +25,15 @@ try
     builder.Host.UseSerilog(); // Add services to the container.
     builder.Services.AddControllers(); // Add Entity Framework and SQLite
     builder.Services.AddDbContext<ProjectRadarContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))); // Add Services
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));    // Add Services
     builder.Services.AddScoped<IRawLeadService, RawLeadService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IEmailParserService, EmailParserService>();
     builder.Services.AddSingleton<IEmailProcessingTrigger, EmailProcessingTrigger>();
+
+    // Add AI Services
+    builder.Services.AddScoped<IChatCompletion, OpenAIChatCompletion>();
+    builder.Services.AddScoped<IDataExtractor, DataExtractor>();
 
     // Add Common Services
     builder.Services.AddTransient<IGuidService, GuidService>();

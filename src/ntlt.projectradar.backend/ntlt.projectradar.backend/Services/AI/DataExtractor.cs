@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using Newtonsoft.Json;
 using ntlt.projectradar.backend.Models;
 
 namespace ntlt.projectradar.backend.Services.AI;
@@ -14,8 +13,7 @@ public class DataExtractor : IDataExtractor
         _logger = logger;
         _completion = completion;
     }
-    
-    public async Task<ProjectDetails?> Extract(string rawData, CancellationToken cancellationToken = default)
+      public async Task<ProjectDetails?> Extract(string rawData, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -26,12 +24,12 @@ public class DataExtractor : IDataExtractor
             }.ToImmutableList();
 
             var result = await _completion.GetCompletionAsync(messages, cancellationToken);
-            return JsonConvert.DeserializeObject<ProjectDetails>(result);
+            return result;
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error extracting data from raw content");
-            return    null;    
+            return null;    
         }
     }
 }
