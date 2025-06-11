@@ -27,3 +27,8 @@ The spec for the MVP is in .doc/mvp_specification.md
 - Repository has GitHub Projects enabled for project management
 - Access to repository via MCP GitHub integration
 - Work with issues, pull requests, and project boards as part of development workflow
+
+# Tool handling
+- WICHTIG: es gibt einen Bug? im Tool Calling: eine neu erstellte Datei wird zunächst nur
+  in der IDE erstellt, aber nicht gespeichert. Wenn möglich neue Dateien nach der Erstellung
+  explizit speichern.
