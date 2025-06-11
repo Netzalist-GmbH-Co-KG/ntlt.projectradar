@@ -34,12 +34,10 @@ export default function EmailsPage() {
 
   const handleEmailSelect = (email: EmailListDto) => {
     setSelectedEmail(email);
-  };
-
-  return (
-    <div className="flex flex-col h-screen bg-neutral-50">
+  };  return (
+    <div className="h-full flex flex-col bg-neutral-50">
       {/* Header */}
-      <div className="bg-white border-b border-neutral-200 px-6 py-4">
+      <div className="bg-white border-b border-neutral-200 px-6 py-4 flex-shrink-0">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold text-neutral-900">
             Email-Client
@@ -60,11 +58,11 @@ export default function EmailsPage() {
       </div>
 
       {/* Main Content - Email Client Layout */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 min-h-0">
         {/* Email List - Left Panel */}
         <div className="w-1/3 border-r border-neutral-200 bg-white flex flex-col">
           {error && (
-            <div className="p-4 bg-red-50 border-b border-red-200">
+            <div className="p-4 bg-red-50 border-b border-red-200 flex-shrink-0">
               <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
@@ -86,7 +84,7 @@ export default function EmailsPage() {
         </div>
 
         {/* Email Detail - Right Panel */}
-        <div className="flex-1 bg-white">
+        <div className="flex-1 bg-white min-w-0">
           <EmailDetailPlaceholder selectedEmail={selectedEmail} />
         </div>
       </div>

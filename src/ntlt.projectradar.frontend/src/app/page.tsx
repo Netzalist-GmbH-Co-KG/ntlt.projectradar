@@ -8,10 +8,9 @@ export default function HomePage() {
   useApp();
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-neutral-50">      {/* Hero Section */}
       <section className="bg-white border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-neutral-900 mb-4">
               Project Radar
@@ -25,7 +24,7 @@ export default function HomePage() {
 
       {/* Features Section */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center text-neutral-900 mb-12">
             Key Features
           </h2>
@@ -64,7 +63,7 @@ export default function HomePage() {
         </div>
       </section>      {/* Toast Demo Section */}
       <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-neutral-900 mb-4">
               UI Components Demo
@@ -74,7 +73,7 @@ export default function HomePage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <ToastDemo />
             <BreadcrumbDemo />
           </div>

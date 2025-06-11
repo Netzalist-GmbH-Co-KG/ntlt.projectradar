@@ -32,10 +32,9 @@ export default function Header({ className = '' }: HeaderProps) {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
-  };
-  return (
+  };  return (
     <header className={`h-16 bg-white border-b border-neutral-200 shadow-sm ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+      <div className="px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex items-center justify-between h-full">          {/* Logo/Brand */}
           <div className="flex items-center">
             <h1 className="text-xl font-semibold text-neutral-900">
