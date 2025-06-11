@@ -11,18 +11,18 @@ public class ProjectDetailsService : IProjectDetailsService
     private readonly ProjectRadarContext _context;
     private readonly IGuidService _guidService;
     private readonly ILogger<ProjectDetailsService> _logger;
-    private readonly IDataExtractor _dataExtractor;
+    private readonly IDataExtractionService _dataExtractionService;
 
     public ProjectDetailsService(
         ProjectRadarContext context,
         IGuidService guidService,
         ILogger<ProjectDetailsService> logger,
-        IDataExtractor dataExtractor)
+        IDataExtractionService dataExtractionService)
     {
         _context = context;
         _guidService = guidService;
         _logger = logger;
-        _dataExtractor = dataExtractor;
+        _dataExtractionService = dataExtractionService;
     }
 
     public async Task<ProjectDetails> CreateProjectDetailsAsync(ProjectDetails projectDetails, CancellationToken cancellationToken = default)
@@ -223,7 +223,7 @@ public class ProjectDetailsService : IProjectDetailsService
         }
 
         // Use the AI service to extract project details from the email content
-        var projectDetails = await _dataExtractor.Extract(email.EmailBodyText, cancellationToken);
+        var projectDetails = await _dataExtractionService.Extract(email.EmailBodyText, cancellationToken);
 
         if (projectDetails == null)
         {

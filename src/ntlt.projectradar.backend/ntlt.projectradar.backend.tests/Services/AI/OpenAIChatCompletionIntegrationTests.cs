@@ -19,7 +19,7 @@ public class OpenAIChatCompletionIntegrationTests
         _chatCompletion = new OpenAIChatCompletion(_logger);
     }
 
-    [Test]
+    [Test][Ignore("This test is for manual inspection and should not run automatically")]
     public async Task ExtractProjectData_WithRealEmail_ShouldReturnStructuredData()
     {
         // Arrange
@@ -28,8 +28,8 @@ public class OpenAIChatCompletionIntegrationTests
 
         var messages = new List<ChatMessage>
         {
-            new ChatMessage(ChatMessageRole.System, SystemPrompts.DefaultSystemPrompt),
-            new ChatMessage(ChatMessageRole.User, emailContent)
+            new(ChatMessageRole.System, SystemPrompts.DefaultSystemPrompt),
+            new(ChatMessageRole.User, emailContent)
         }.ToImmutableList();
 
         // Act

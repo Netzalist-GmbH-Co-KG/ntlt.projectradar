@@ -3,12 +3,12 @@ using ntlt.projectradar.backend.Models;
 
 namespace ntlt.projectradar.backend.Services.AI;
 
-public class DataExtractor : IDataExtractor
+public class DataExtractionService : IDataExtractionService
 {
-    private readonly ILogger<DataExtractor> _logger;
+    private readonly ILogger<DataExtractionService> _logger;
     private readonly IChatCompletion _completion;
 
-    public DataExtractor(IChatCompletion completion, ILogger<DataExtractor> logger)
+    public DataExtractionService(IChatCompletion completion, ILogger<DataExtractionService> logger)
     {
         _logger = logger;
         _completion = completion;
@@ -19,8 +19,8 @@ public class DataExtractor : IDataExtractor
         {
             var messages = new List<ChatMessage>
             {
-                new ChatMessage(ChatMessageRole.System, SystemPrompts.DefaultSystemPrompt),
-                new ChatMessage(ChatMessageRole.User, rawData)
+                new(ChatMessageRole.System, SystemPrompts.DefaultSystemPrompt),
+                new(ChatMessageRole.User, rawData)
             }.ToImmutableList();
 
             var result = await _completion.GetCompletionAsync(messages, cancellationToken);

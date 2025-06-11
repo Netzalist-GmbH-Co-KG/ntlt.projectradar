@@ -13,6 +13,6 @@ public class ProjectDetails
     public decimal? BudgetMin { get; set; }
     public decimal? BudgetMax { get; set; }
     public string? Timeline { get; set; }
-    public List<string> Technologies { get; set; } = new List<string>();
+    public List<string> Technologies { get; set; } = new();
     [Required] public DateTime CreatedAt { get; set; }
 }

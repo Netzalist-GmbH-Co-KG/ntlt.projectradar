@@ -34,7 +34,7 @@ try
 
     // Add AI Services
     builder.Services.AddScoped<IChatCompletion, OpenAIChatCompletion>();
-    builder.Services.AddScoped<IDataExtractor, DataExtractor>();
+    builder.Services.AddScoped<IDataExtractionService, DataExtractionService>();
 
     // Add Common Services
     builder.Services.AddTransient<IGuidService, GuidService>();

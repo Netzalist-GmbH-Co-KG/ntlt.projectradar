@@ -11,7 +11,7 @@ public class ProjectDetailsDto
     public decimal? BudgetMin { get; set; }
     public decimal? BudgetMax { get; set; }
     public string? Timeline { get; set; }
-    public List<string> Technologies { get; set; } = new List<string>();
+    public List<string> Technologies { get; set; } = new();
     public DateTime CreatedAt { get; set; }
 }
 
@@ -25,7 +25,7 @@ public class CreateProjectDetailsDto
     public decimal? BudgetMin { get; set; }
     public decimal? BudgetMax { get; set; }
     public string? Timeline { get; set; }
-    public List<string> Technologies { get; set; } = new List<string>();
+    public List<string> Technologies { get; set; } = new();
 }
 
 public class UpdateProjectDetailsDto
@@ -38,7 +38,7 @@ public class UpdateProjectDetailsDto
     public decimal? BudgetMin { get; set; }
     public decimal? BudgetMax { get; set; }
     public string? Timeline { get; set; }
-    public List<string> Technologies { get; set; } = new List<string>();
+    public List<string> Technologies { get; set; } = new();
 }
 
 public class ProjectEmailLinkDto

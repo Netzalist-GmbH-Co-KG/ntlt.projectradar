@@ -2,7 +2,7 @@
 
 namespace ntlt.projectradar.backend.Services.AI;
 
-public interface IDataExtractor
+public interface IDataExtractionService
 {
     public Task<ProjectDetails?> Extract(string rawData, CancellationToken cancellationToken = default);
 }

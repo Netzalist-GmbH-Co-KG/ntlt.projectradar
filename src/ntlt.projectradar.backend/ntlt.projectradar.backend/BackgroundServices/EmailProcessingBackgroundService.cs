@@ -1,6 +1,7 @@
 ﻿using ntlt.projectradar.backend.Common;
 using ntlt.projectradar.backend.Models;
 using ntlt.projectradar.backend.Services;
+using ntlt.projectradar.backend.Services.AI;
 
 namespace ntlt.projectradar.backend.BackgroundServices;
 
@@ -113,11 +114,15 @@ public class EmailProcessingBackgroundService : BackgroundService, IEmailProcess
             _logger.LogDebug("Processing RawLead {RawLeadId}", rawLead.Id);
 
             using var scope = _serviceScopeFactory.CreateScope();
+            var projectDetailsService = scope.ServiceProvider.GetRequiredService<IProjectDetailsService>();
             var parserService = scope.ServiceProvider.GetRequiredService<IEmailParserService>();
             var rawLeadService = scope.ServiceProvider.GetRequiredService<IRawLeadService>();
-
+            
             // Parse and persist email details
-            await parserService.ParseAndPersistEmailAsync(rawLead, cancellationToken);
+            var newMail = await parserService.ParseAndPersistEmailAsync(rawLead, cancellationToken);
+            
+            // Extract project details using AI service
+            await projectDetailsService.ExtractAndCreateFromEmailAsync(newMail.Id, cancellationToken);
 
             // Update status to Completed
             await rawLeadService.UpdateProcessingStatusAsync(
