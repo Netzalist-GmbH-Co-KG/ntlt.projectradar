@@ -11,9 +11,10 @@ export type { ProjectDetailsDto, CreateProjectDetailsDto, UpdateProjectDetailsDt
 /**
  * Frontend project interface with additional computed properties
  */
-export interface Project extends Omit<ProjectDetailsDto, 'id' | 'createdAt'> {
+export interface Project extends Omit<ProjectDetailsDto, 'id' | 'createdAt' | 'currentStatus'> {
   id: string;
   createdAt: Date;
+  currentStatus: ProjectStatus;
   
   // Computed properties
   budgetRange?: string;
@@ -135,6 +136,7 @@ export const ProjectUtils = {
     return {
       ...dto,
       createdAt: new Date(dto.createdAt),
+      currentStatus: dto.currentStatus as ProjectStatus,
       budgetRange: ProjectUtils.formatBudgetRange(dto.budgetMin, dto.budgetMax),
       technologiesDisplay: dto.technologies.join(', '),
       timelineDisplay: dto.timeline || 'Not specified',
@@ -279,3 +281,15 @@ export const ProjectUtils = {
     );
   }
 };
+
+// Add ProjectStatus Enum
+export enum ProjectStatus {
+  New = 'New',
+  InterestingCold = 'InterestingCold',
+  InterestingContacted = 'InterestingContacted',
+  InterestingInProgress = 'InterestingInProgress',
+  NotInteresting = 'NotInteresting',
+  Won = 'Won',
+  Lost = 'Lost',
+  MissedOpportunity = 'MissedOpportunity',
+}

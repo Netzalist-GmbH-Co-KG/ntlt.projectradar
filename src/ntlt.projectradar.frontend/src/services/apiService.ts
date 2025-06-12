@@ -74,6 +74,8 @@ export interface EmailDetailsDto {
 }
 
 // Project-related interfaces
+import { ProjectStatus } from '../types/project';
+
 export interface ProjectDetailsDto {
   id: string;
   title: string | null;
@@ -86,6 +88,7 @@ export interface ProjectDetailsDto {
   timeline: string | null;
   technologies: string[];
   createdAt: string;
+  currentStatus: ProjectStatus;
 }
 
 export interface CreateProjectDetailsDto {
@@ -264,6 +267,17 @@ class ApiService {
     return this.fetchWithErrorHandling<ProjectDetailsDto>(`${API_BASE_URL}/api/projects/${id}`, {
       method: 'PUT',
       body: JSON.stringify(project),
+    });
+  }
+
+  async updateProjectStatus(projectId: string, newStatus: ProjectStatus, comment?: string): Promise<void> {
+    const payload: { newStatus: ProjectStatus; comment?: string } = { newStatus };
+    if (comment) {
+      payload.comment = comment;
+    }
+    await this.fetchWithErrorHandling<void>(`${API_BASE_URL}/api/projects/${projectId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
     });
   }
 

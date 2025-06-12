@@ -36,10 +36,10 @@ Das Ziel dieser User Story ist es, ein System zur Verwaltung des Status von Proj
         - Setzt `ChangedBy` auf den aktuellen Benutzer (vorerst "Tobias").
 
 ### 4. Frontend: API Service anpassen
-- [ ] **Typdefinitionen erweitern:**
+- [x] **Typdefinitionen erweitern:**
     - In `ntlt.projectradar.frontend/src/types/project.ts` (oder Äquivalent) die `Project` Typdefinition um `currentStatus` erweitern.
     - Enum für Projektstatus im Frontend definieren, passend zum Backend.
-- [ ] **`apiService.ts` erweitern:**
+- [x] **`apiService.ts` erweitern:**
     - In `ntlt.projectradar.frontend/src/services/apiService.ts` eine neue Methode `updateProjectStatus(projectId: string, newStatus: string, comment?: string)` hinzufügen, die den `PATCH /api/projects/{id}/status` Endpoint aufruft.
     - Sicherstellen, dass `getProjects` und `getProjectById` den `currentStatus` verarbeiten.
 
