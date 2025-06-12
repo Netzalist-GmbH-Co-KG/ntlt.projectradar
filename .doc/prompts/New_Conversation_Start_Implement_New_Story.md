@@ -12,7 +12,7 @@ Bevor wir weitermachen, lies Dir bitte unbedingt folgende Informationen in diese
 
 ## Aktuelle Aufgabe
 
-Wir fangen jetzt mit der Bearbeitung der User Story Nummer #8 in Github an.
+Wir fangen jetzt mit der Bearbeitung der User Story Nummer #15 in Github an.
 
 - Rufe das Issue aus github ab und lies es.
 
@@ -30,7 +30,7 @@ der sukkzessive abgearbeitet werden kann.
 Der Plan sollte folgenden Aufbau haben:
 
 ANFANG DES TEMPLATES ------------
-# User Story #8 Implementation Plan
+# User Story #15 Implementation Plan
 
 ## Ziel
 {Kurze Zusammenfassung des Ziels der Story}
