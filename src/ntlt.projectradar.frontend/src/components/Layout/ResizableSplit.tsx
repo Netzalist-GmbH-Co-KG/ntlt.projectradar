@@ -89,9 +89,8 @@ export default function ResizableSplit({
   }, [isDragging, handleMouseMove, handleMouseUp]);
   const rightWidth = useFixedWidth ? 'auto' : `${100 - leftWidth}%`;
   const leftWidthStyle = useFixedWidth ? `${leftWidth}px` : `${leftWidth}%`;
-
   return (
-    <div ref={containerRef} className={`flex h-screen ${className}`}>
+    <div ref={containerRef} className={`flex h-full ${className}`}>
       {/* Left Panel */}
       <div 
         className="flex flex-col flex-shrink-0" 

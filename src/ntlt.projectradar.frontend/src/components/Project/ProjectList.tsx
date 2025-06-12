@@ -103,11 +103,9 @@ export default function ProjectList({
                   <span>via {project.agencyName}</span>
                 )}
               </div>
-            )}
-
-            {/* Third Line: Budget and Timeline */}
-            <div className="flex items-center justify-between text-xs text-neutral-500">
-              <span className="truncate flex-1">
+            )}            {/* Third Line: Budget and Timeline */}
+            <div className="flex flex-col gap-1 text-xs text-neutral-500">
+              <span className="truncate">
                 {project.budgetMin || project.budgetMax ? (
                   `Budget: ${formatBudget(project.budgetMin, project.budgetMax)}`
                 ) : (
@@ -115,9 +113,9 @@ export default function ProjectList({
                 )}
               </span>
               {project.timeline && (
-                <span className="ml-2 flex-shrink-0">
-                  {formatTimeline(project.timeline)}
-                </span>
+                <div className="break-words text-wrap">
+                  Timeline: {formatTimeline(project.timeline)}
+                </div>
               )}
             </div>
 

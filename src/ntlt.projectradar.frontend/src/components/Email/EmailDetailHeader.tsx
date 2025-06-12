@@ -47,19 +47,20 @@ export default function EmailDetailHeader({
   const [overlayPosition, setOverlayPosition] = useState<{ x: number; y: number } | null>(null);  // Handle project hover (desktop)
   const handleProjectHover = (projectId: string, event: React.MouseEvent) => {
     const rect = event.currentTarget.getBoundingClientRect();
+    const overlayWidth = Math.min(600, window.innerWidth - 40);
     setOverlayPosition({
-      x: rect.right - 768 + 20, // Position overlay closer to the button (20px gap from right edge)
+      x: Math.min(rect.right - overlayWidth + 20, window.innerWidth - overlayWidth - 20), // Position with padding
       y: rect.bottom + 8   // Position below the button with small gap
     });
     setHoveredProject(projectId);
   };
-
   // Handle project touch (mobile)
   const handleProjectTouch = (projectId: string, event: React.TouchEvent) => {
     event.preventDefault();
     const rect = event.currentTarget.getBoundingClientRect();
+    const overlayWidth = Math.min(600, window.innerWidth - 40);
     setOverlayPosition({
-      x: rect.right - 768 + 20,
+      x: Math.min(rect.right - overlayWidth + 20, window.innerWidth - overlayWidth - 20),
       y: rect.bottom + 8
     });
     setHoveredProject(hoveredProject === projectId ? null : projectId);
@@ -167,14 +168,14 @@ export default function EmailDetailHeader({
           isDownloading={isDownloading}
           error={downloadError}
         />
-      </div>      
-      {/* Project Details Overlay */}
+      </div>        {/* Project Details Overlay */}
       {hoveredProject && overlayPosition && (
         <div 
-          className="fixed z-50 w-[768px] max-w-2xl bg-white border border-neutral-200 rounded-lg shadow-lg overflow-hidden"
+          className="fixed z-50 max-w-2xl bg-white border border-neutral-200 rounded-lg shadow-lg overflow-hidden"
           style={{
-            left: overlayPosition.x,
+            left: Math.min(overlayPosition.x, window.innerWidth - 600), // Ensure it fits in viewport
             top: overlayPosition.y,
+            width: Math.min(600, window.innerWidth - 40), // Responsive width with padding
             pointerEvents: 'none'
           }}
           onMouseEnter={() => setHoveredProject(hoveredProject)}

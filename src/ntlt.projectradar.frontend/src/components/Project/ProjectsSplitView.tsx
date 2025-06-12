@@ -42,9 +42,8 @@ export default function ProjectsSplitView({ selectedProjectId }: ProjectsSplitVi
       console.error('Failed to update project:', error);
       return false;
     }
-  };
-  return (
-    <div className="h-screen flex flex-col bg-neutral-50">
+  };  return (
+    <div className="h-full flex flex-col bg-neutral-50" style={{ height: 'calc(100vh - 4rem - 3rem)' }}>
       {/* Header */}
       <div className="bg-white border-b border-neutral-200 px-6 py-4 flex-shrink-0">
         <div className="flex items-center justify-between">
