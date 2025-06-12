@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import type { Project, ProjectUpdateFormData } from '../../types/project';
 import ProjectEditHeader from './ProjectEditHeader';
 import ProjectEditBasicInfo from './ProjectEditBasicInfo';
@@ -18,7 +18,7 @@ interface ProjectDetailsEditProps {
 
 /**
  * ProjectDetailsEdit Component - Editable form for project details
- * Features auto-save with debouncing, optimistic updates, and validation
+ * Features manual save with change tracking
  */
 export function ProjectDetailsEdit({ 
   project, 
@@ -41,58 +41,39 @@ export function ProjectDetailsEdit({
 
   // Local state for UI
   const [hasChanges, setHasChanges] = useState(false);
-  const [isAutoSaving, setIsAutoSaving] = useState(false);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  // Refs for debouncing
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Keep track of initial data
   const initialDataRef = useRef(formData);
 
-  // Auto-save with debouncing (500ms delay) and optimistic updates
-  const debouncedSave = useCallback(async (data: ProjectUpdateFormData) => {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
+  // Handle manual save
+  const handleSave = async () => {
+    if (!hasChanges || isSaving) return;
 
-    saveTimeoutRef.current = setTimeout(async () => {
-      if (hasChanges) {
-        setIsAutoSaving(true);
-        setSaveError(null);
-        
-        // Store current data for rollback (optimistic update already applied to UI)
-        const rollbackData = { ...initialDataRef.current };
-        
-        try {
-          const success = await onSave(data);
-          if (success) {
-            setHasChanges(false);
-            setLastSaved(new Date());
-            initialDataRef.current = { ...data }; // Update initial data on successful save
-          } else {
-            // Rollback on save failure
-            setFormData(rollbackData);
-            initialDataRef.current = rollbackData;
-            setHasChanges(false);
-            setSaveError('Failed to save changes - changes reverted');
-          }
-        } catch (error) {
-          // Rollback on error
-          setFormData(rollbackData);
-          initialDataRef.current = rollbackData;
-          setHasChanges(false);
-          setSaveError(error instanceof Error ? 
-            `Save failed: ${error.message} - changes reverted` : 
-            'Save failed - changes reverted'
-          );
-        } finally {
-          setIsAutoSaving(false);
-        }
+    setIsSaving(true);
+    setSaveError(null);
+    
+    try {
+      const success = await onSave(formData);
+      if (success) {
+        setHasChanges(false);
+        initialDataRef.current = { ...formData };
+        // Don't close edit mode, let parent handle it via onSave callback
+      } else {
+        setSaveError('Failed to save changes');
       }
-    }, 500);
-  }, [hasChanges, onSave]);
+    } catch (error) {
+      setSaveError(error instanceof Error ? 
+        `Save failed: ${error.message}` : 
+        'Save failed'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
-  // Update form data and trigger auto-save
+  // Update form data and check for changes
   const updateFormData = useCallback((updates: Partial<ProjectUpdateFormData>) => {
     const newData = { ...formData, ...updates };
     setFormData(newData);
@@ -101,27 +82,18 @@ export function ProjectDetailsEdit({
     const dataChanged = JSON.stringify(newData) !== JSON.stringify(initialDataRef.current);
     setHasChanges(dataChanged);
     
-    if (dataChanged) {
-      debouncedSave(newData);
+    // Clear save error when user makes changes
+    if (saveError) {
+      setSaveError(null);
     }
-  }, [formData, debouncedSave]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
-
+  }, [formData, saveError]);
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-neutral-200 ${className}`}>
       <ProjectEditHeader
-        isAutoSaving={isAutoSaving}
-        lastSaved={lastSaved}
         hasChanges={hasChanges}
+        isSaving={isSaving}
         saveError={saveError}
+        onSave={handleSave}
         onCancel={onCancel}
       />
 

@@ -36,14 +36,13 @@ export function ProjectDetails({
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
-
   // Handle save from edit component
   const handleSave = async (data: ProjectUpdateFormData): Promise<boolean> => {
     if (!project || !onUpdateProject) return false;
     
     const success = await onUpdateProject(project.id, data);
     if (success) {
-      setIsEditing(false);
+      setIsEditing(false); // Close edit mode on successful save
     }
     return success;
   };
