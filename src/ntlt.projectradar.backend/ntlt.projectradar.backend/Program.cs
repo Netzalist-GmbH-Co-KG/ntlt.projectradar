@@ -30,6 +30,7 @@ try
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IEmailParserService, EmailParserService>();
     builder.Services.AddScoped<IProjectDetailsService, ProjectDetailsService>();
+    builder.Services.AddScoped<IProjectStatusService, ProjectStatusService>(); // Add ProjectStatusService
     builder.Services.AddSingleton<IEmailProcessingTrigger, EmailProcessingTrigger>();
 
     // Add AI Services
