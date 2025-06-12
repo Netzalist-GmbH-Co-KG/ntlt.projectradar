@@ -76,7 +76,7 @@ Implementierung einer vollständigen Projekt-Verwaltung mit echten Backend-Daten
 - [ ] Optional Catch-All Route für `/projects` und `/projects/{id}`
 - [ ] Split Layout: Liste links (1/3), Details rechts (2/3)
 - [ ] ProjectList Komponente (ohne Overlay, wie EmailList)
-- [ ] Selected State Management über URL Parameter
+- [ ] Selected State Management über URL Parameter id
 - [ ] Responsive Verhalten (Mobile: Stack)
 
 ### 10. ProjectList Komponente
