@@ -130,13 +130,33 @@ export interface ProjectValidationErrors {
  */
 export const ProjectUtils = {
   /**
+   * Convert numerical status from DTO to ProjectStatus enum string value
+   */
+  mapDtoStatusToEnum(dtoStatus: any): ProjectStatus { // Accept 'any' to handle potential backend type, will be treated as number
+    const statusMap: { [key: number]: ProjectStatus } = {
+      0: ProjectStatus.New,
+      1: ProjectStatus.InterestingCold,
+      2: ProjectStatus.InterestingContacted,
+      3: ProjectStatus.InterestingInProgress,
+      4: ProjectStatus.NotInteresting,
+      5: ProjectStatus.Won,
+      6: ProjectStatus.Lost,
+      7: ProjectStatus.MissedOpportunity,
+    };
+    // Ensure dtoStatus is treated as a number for the lookup
+    const numericStatus = Number(dtoStatus);
+    return statusMap[numericStatus] || ProjectStatus.New; // Default to New if mapping is not found or status is invalid
+  },
+
+  /**
    * Convert ProjectDetailsDto to frontend Project interface
    */
   fromDto(dto: ProjectDetailsDto): Project {
     return {
       ...dto,
       createdAt: new Date(dto.createdAt),
-      currentStatus: dto.currentStatus as ProjectStatus,
+      // Ensure dto.currentStatus is passed to mapDtoStatusToEnum
+      currentStatus: ProjectUtils.mapDtoStatusToEnum(dto.currentStatus),
       budgetRange: ProjectUtils.formatBudgetRange(dto.budgetMin, dto.budgetMax),
       technologiesDisplay: dto.technologies.join(', '),
       timelineDisplay: dto.timeline || 'Not specified',

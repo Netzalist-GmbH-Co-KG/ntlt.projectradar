@@ -6,8 +6,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Project } from '../../types/project';
+import { Project, ProjectStatus } from '../../types/project'; // Added ProjectStatus import
 import { LoadingCard } from '../Loading/LoadingComponents';
+import ProjectStatusBadge from './ProjectStatusBadge';
 
 interface ProjectListProps {
   projects: Project[];
@@ -23,6 +24,30 @@ export default function ProjectList({
   isLoading 
 }: ProjectListProps) {
   const router = useRouter();
+
+  // Helper function to extract border color from badge's utility
+  const getBorderColorClass = (status: ProjectStatus): string => {
+    // This function provides the Tailwind class for the left border color
+    switch (status) {
+      case ProjectStatus.New:
+        return 'border-l-blue-500';
+      case ProjectStatus.InterestingCold:
+        return 'border-l-sky-500';
+      case ProjectStatus.InterestingContacted:
+        return 'border-l-yellow-500';
+      case ProjectStatus.InterestingInProgress:
+        return 'border-l-orange-500';
+      case ProjectStatus.Won:
+        return 'border-l-green-500';
+      case ProjectStatus.Lost:
+        return 'border-l-red-500';
+      case ProjectStatus.NotInteresting:
+      case ProjectStatus.MissedOpportunity:
+        return 'border-l-gray-500';
+      default:
+        return 'border-l-gray-300';
+    }
+  };
 
   // Format helper functions
   const formatBudget = (min?: number | null, max?: number | null) => {
@@ -85,8 +110,10 @@ export default function ProjectList({
             key={project.id}
             onClick={() => handleProjectSelect(project)}
             className={`
-              border-b border-neutral-200 p-4 cursor-pointer hover:bg-neutral-50 transition-colors
-              ${selectedProjectId === project.id ? 'bg-blue-50 border-blue-200' : ''}
+              border-b border-neutral-200 p-4 cursor-pointer hover:bg-neutral-50 transition-colors relative
+              border-l-5 ${getBorderColorClass(project.currentStatus)} // Added left border with status color
+              ${selectedProjectId === project.id ? 'bg-blue-50 !border-l-blue-700' : ''} // Ensure selected border overrides status border, made it darker for selection
+              ${(project.currentStatus === 'NotInteresting' || project.currentStatus === 'MissedOpportunity') ? 'opacity-60 hover:opacity-100' : ''}
             `}
           >
             {/* First Line: Title and Created Date */}
@@ -94,7 +121,8 @@ export default function ProjectList({
               <h3 className="font-semibold text-sm text-neutral-900 truncate flex-1 pr-2">
                 {project.title || 'Untitled Project'}
               </h3>
-              <span className="text-xs text-neutral-500 flex-shrink-0">
+              {/* Date is now part of the main flow, badge moved down */}
+              <span className="text-xs text-neutral-500 flex-shrink-0 ml-2">
                 {project.createdAt?.toLocaleDateString('de-DE')}
               </span>
             </div>
@@ -126,21 +154,28 @@ export default function ProjectList({
               )}
             </div>
 
-            {/* Fourth Line: Technologies */}
-            {project.technologies && project.technologies.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1">
-                {project.technologies.slice(0, 3).map((tech, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-700"
-                  >
-                    {tech}
-                  </span>
-                ))}
-                {project.technologies.length > 3 && (
-                  <span className="text-xs text-neutral-500">
-                    +{project.technologies.length - 3} more
-                  </span>
+            {/* Fourth Line: Technologies & Status Badge */}
+            {(project.technologies && project.technologies.length > 0 || project.currentStatus) && (
+              <div className="mt-3 flex flex-wrap gap-1 items-center justify-between">
+                <div className="flex flex-wrap gap-1 items-center">
+                  {project.technologies.slice(0, 3).map((tech, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-700"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                  {project.technologies.length > 3 && (
+                    <span className="text-xs text-neutral-500">
+                      +{project.technologies.length - 3} more
+                    </span>
+                  )}
+                </div>
+                {project.currentStatus && (
+                  <div className="mt-2 sm:mt-0 flex-shrink-0">
+                     <ProjectStatusBadge status={project.currentStatus} />
+                  </div>
                 )}
               </div>
             )}

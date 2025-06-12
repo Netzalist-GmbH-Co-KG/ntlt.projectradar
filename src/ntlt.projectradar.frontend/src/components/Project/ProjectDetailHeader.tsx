@@ -6,6 +6,7 @@
 
 import { PencilIcon } from '@heroicons/react/24/outline';
 import type { Project } from '../../types/project';
+import ProjectStatusBadge from './ProjectStatusBadge'; // Import ProjectStatusBadge
 
 interface ProjectDetailHeaderProps {
   project: Project;
@@ -19,7 +20,8 @@ export default function ProjectDetailHeader({
   onEdit 
 }: ProjectDetailHeaderProps) {
   return (
-    <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
+    <div className="px-6 py-4 border-b border-neutral-200 flex items-start justify-between">
+      {/* Left Part: Title, Client, Agency */}
       <div className="flex-1 min-w-0">
         <h2 className="text-xl font-semibold text-neutral-900 truncate">
           {project.title || 'Untitled Project'}
@@ -35,15 +37,24 @@ export default function ProjectDetailHeader({
           </p>
         )}
       </div>
-      {showEditButton && onEdit && (
-        <button
-          onClick={onEdit}
-          className="ml-4 p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-colors"
-          aria-label="Edit project"
-        >
-          <PencilIcon className="h-5 w-5" />
-        </button>
-      )}
+
+      {/* Right Part: Status Badge and Edit Button */}
+      <div className="ml-4 flex flex-col items-end">
+        {project.currentStatus && (
+          <div className="mb-1"> {/* Add margin below badge */}
+            <ProjectStatusBadge status={project.currentStatus} />
+          </div>
+        )}
+        {showEditButton && onEdit && (
+          <button
+            onClick={onEdit}
+            className="p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-colors"
+            aria-label="Edit project"
+          >
+            <PencilIcon className="h-5 w-5" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }

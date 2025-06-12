@@ -175,10 +175,10 @@ export default function EmailDetailHeader({
           style={{
             left: Math.min(overlayPosition.x, window.innerWidth - 600), // Ensure it fits in viewport
             top: overlayPosition.y,
-            width: Math.min(600, window.innerWidth - 40), // Responsive width with padding
+            width: Math.min(600, window.innerWidth - 40), 
             pointerEvents: 'none'
           }}
-          onMouseEnter={() => setHoveredProject(hoveredProject)}
+          onMouseEnter={() => setHoveredProject(hoveredProject)} 
         >
           <div className="overflow-hidden max-w-full">
             <ProjectDetails

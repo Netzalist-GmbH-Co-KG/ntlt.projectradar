@@ -44,7 +44,7 @@ Das Ziel dieser User Story ist es, ein System zur Verwaltung des Status von Proj
     - Sicherstellen, dass `getProjects` und `getProjectById` den `currentStatus` verarbeiten.
 
 ### 5. Frontend: UI-Anpassungen für Projektstatus
-- [ ] **Projektliste (`/projects`):**
+- [x] **Projektliste (`/projects`):**
     - `CurrentStatus` für jedes Projekt anzeigen.
     - Farbkodierung für Status implementieren (z.B. durch CSS-Klassen basierend auf dem Status).
         - `New`: Blau
