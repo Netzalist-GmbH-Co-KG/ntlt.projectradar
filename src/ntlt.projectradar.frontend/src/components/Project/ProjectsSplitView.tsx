@@ -11,6 +11,7 @@ import { Breadcrumb } from '../Navigation/Breadcrumb';
 import ProjectList from './ProjectList';
 import { ProjectDetails } from './ProjectDetails';
 import ProjectDetailStates from './ProjectDetailStates';
+import ResizableSplit from '../Layout/ResizableSplit';
 
 interface ProjectsSplitViewProps {
   selectedProjectId?: string;
@@ -42,9 +43,8 @@ export default function ProjectsSplitView({ selectedProjectId }: ProjectsSplitVi
       return false;
     }
   };
-
   return (
-    <div className="h-full flex flex-col bg-neutral-50">
+    <div className="h-screen flex flex-col bg-neutral-50">
       {/* Header */}
       <div className="bg-white border-b border-neutral-200 px-6 py-4 flex-shrink-0">
         <div className="flex items-center justify-between">
@@ -64,48 +64,53 @@ export default function ProjectsSplitView({ selectedProjectId }: ProjectsSplitVi
             </span>
           </div>
         </div>
-      </div>
-
-      {/* Main Content - Split Layout */}
-      <div className="flex flex-1 min-h-0">
-        {/* Project List - Left Panel (1/3) */}
-        <div className="w-1/3 border-r border-neutral-200 bg-white flex flex-col">
-          {projectsError && (
-            <div className="p-4 bg-red-50 border-b border-red-200 flex-shrink-0">
-              <p className="text-sm text-red-600">{projectsError}</p>
-            </div>
-          )}
-          
-          <ProjectList
-            projects={filteredProjects}
-            selectedProjectId={selectedProjectId}
-            isLoading={projectsLoading}
-          />
-        </div>
-
-        {/* Project Details - Right Panel (2/3) */}
-        <div className="flex-1 bg-white min-w-0 flex flex-col">
-          {projectError && (
-            <div className="p-4 bg-red-50 border-b border-red-200 flex-shrink-0">
-              <p className="text-sm text-red-600">{projectError}</p>
-            </div>
-          )}
-          
-          <div className="flex-1 p-6">
-            {projectLoading ? (
-              <ProjectDetailStates type="loading" />
-            ) : projectError ? (
-              <ProjectDetailStates type="error" error={projectError} />
-            ) : selectedProject ? (
-              <ProjectDetails
-                project={selectedProject}
-                onUpdateProject={handleUpdateProject}
-              />
-            ) : (
-              <ProjectDetailStates type="no-selection" />
+      </div>      {/* Main Content - Split Layout */}
+      <div className="flex-1 min-h-0">
+        <ResizableSplit 
+          useFixedWidth={true}
+          initialLeftWidth={400} 
+          minLeftWidth={300} 
+          maxLeftWidth={600}
+        >
+          {/* Project List - Left Panel */}
+          <div className="bg-white flex flex-col h-full">
+            {projectsError && (
+              <div className="p-4 bg-red-50 border-b border-red-200 flex-shrink-0">
+                <p className="text-sm text-red-600">{projectsError}</p>
+              </div>
             )}
+            
+            <ProjectList
+              projects={filteredProjects}
+              selectedProjectId={selectedProjectId}
+              isLoading={projectsLoading}
+            />
           </div>
-        </div>
+
+          {/* Project Details - Right Panel */}
+          <div className="bg-white flex flex-col h-full">
+            {projectError && (
+              <div className="p-4 bg-red-50 border-b border-red-200 flex-shrink-0">
+                <p className="text-sm text-red-600">{projectError}</p>
+              </div>
+            )}
+            
+            <div className="flex-1 p-6">
+              {projectLoading ? (
+                <ProjectDetailStates type="loading" />
+              ) : projectError ? (
+                <ProjectDetailStates type="error" error={projectError} />
+              ) : selectedProject ? (
+                <ProjectDetails
+                  project={selectedProject}
+                  onUpdateProject={handleUpdateProject}
+                />
+              ) : (
+                <ProjectDetailStates type="no-selection" />
+              )}
+            </div>
+          </div>
+        </ResizableSplit>
       </div>
     </div>
   );
