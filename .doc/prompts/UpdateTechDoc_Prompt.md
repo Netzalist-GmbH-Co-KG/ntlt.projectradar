@@ -1,5 +1,6 @@
 <AUFGABE>
-Aktualisiere die technische Dokumentation in der Datei .doc/System_Overview.md des Projektes, falls nötig.
+Aktualisiere die technische Dokumentation in der Datei .doc/technical/System_Overview.md des Projektes, falls nötig.
+Wichtig: Ändere die Datei nur, wenn Informationen falsch sind oder fehlen. Der "Diff" sollte minimal sein.
 </AUFGABE>
 
 <DETAILS>

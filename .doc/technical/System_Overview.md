@@ -4,12 +4,14 @@
 
 ### Persistence: Database Structure
 
+Das Backend verwendet SQLite als Datenbank mit Entity Framework Core. Die Datenstruktur umfasst folgende Entitäten:
+
 ```mermaid
 erDiagram
-    RawLead ||--|| EmailDetails : "contains"
-    EmailDetails ||--o{ EmailAttachment : "has"
-    ProjectDetails ||--o{ ProjectEmails : "linked to"
-    EmailDetails ||--o{ ProjectEmails : "linked to"
+    RawLead ||--o{ EmailDetails : "1:n"
+    EmailDetails ||--o{ EmailAttachment : "1:n"
+    ProjectDetails ||--o{ ProjectEmails : "1:n"
+    EmailDetails ||--o{ ProjectEmails : "1:n"
     
     RawLead {
         Guid Id PK
@@ -49,13 +51,13 @@ erDiagram
         decimal BudgetMin
         decimal BudgetMax
         string Timeline
-        string Technologies
+        List_string_ Technologies
         DateTime CreatedAt
     }
     
     ProjectEmails {
-        Guid ProjectId PK
-        Guid EmailId PK
+        Guid ProjectId FK
+        Guid EmailId FK
     }
 ```
 
@@ -87,11 +89,11 @@ erDiagram
 
 | DTO | Properties | Type |
 |-----|------------|------|
+| EmailAttachmentDto | Id, AttachmentFilename, AttachmentMimeType, AttachmentContent, CreatedAt | Guid, string, string, string, DateTime |
+| EmailDetailsDto | Id, RawLeadId, EmailFrom, EmailTo, EmailSubject, EmailDate, EmailBodyText, EmailBodyHtml, CreatedAt, Attachments | Guid, Guid, string, string, string, DateTime?, string, string, DateTime, IEnumerable<EmailAttachmentDto> |
 | EmailAttachmentListDto | Id, AttachmentFilename, AttachmentMimeType | Guid, string, string |
 | EmailListDto | Id, EmailFrom, EmailTo, EmailSubject, EmailDate, CreatedAt, HasAttachments, Attachments | Guid, string, string, string, DateTime?, DateTime, bool, IEnumerable<EmailAttachmentListDto> |
 | EmailListResponseDto | Emails, TotalCount, Page, PageSize, TotalPages, HasNextPage, HasPreviousPage | IEnumerable<EmailListDto>, int, int, int, int, bool, bool |
-| EmailAttachmentDto | Id, AttachmentFilename, AttachmentMimeType, AttachmentContent, CreatedAt | Guid, string, string, string, DateTime |
-| EmailDetailsDto | Id, RawLeadId, EmailFrom, EmailTo, EmailSubject, EmailDate, EmailBodyText, EmailBodyHtml, CreatedAt, Attachments | Guid, Guid, string, string, string, DateTime?, string, string, DateTime, IEnumerable<EmailAttachmentDto> |
 | ProjectDetailsDto | Id, Title, Description, ClientName, AgencyName, ContactEmail, BudgetMin, BudgetMax, Timeline, Technologies, CreatedAt | Guid, string?, string?, string?, string?, string?, decimal?, decimal?, string?, List<string>, DateTime |
 | CreateProjectDetailsDto | Title, Description, ClientName, AgencyName, ContactEmail, BudgetMin, BudgetMax, Timeline, Technologies | string?, string?, string?, string?, string?, decimal?, decimal?, string?, List<string> |
 | UpdateProjectDetailsDto | Title, Description, ClientName, AgencyName, ContactEmail, BudgetMin, BudgetMax, Timeline, Technologies | string?, string?, string?, string?, string?, decimal?, decimal?, string?, List<string> |
@@ -101,38 +103,43 @@ erDiagram
 
 | Service | Funktion |
 |---------|----------|
-| EmailProcessingBackgroundService | **2-stufige sequenzielle Verarbeitung von .eml Dateien:** <br/>1. **Email-Extraktion**: Parst .eml Inhalte und erstellt EmailDetails + EmailAttachment Datensätze <br/>2. **KI-Projektextraktion**: Analysiert Email-Inhalte mit AI Service und erstellt automatisch ProjectDetails Datensätze für erkannte Projektanfragen <br/>**Trigger**: Automatisch bei RawLead Upload, verarbeitet alle RawLeads mit Status "Processing" parallel |
+| EmailProcessingBackgroundService | Verarbeitet RawLeads mit Status "Processing" automatisch. Parst E-Mail-Inhalte mit MimeKit, extrahiert Anhänge, erstellt EmailDetails und versucht Projektdaten mit AI-Service zu extrahieren. Aktualisiert Status auf "Completed" oder "Failed". |
 
 ## Frontend
 
 ### API connection
 
-| Frontend Method | Backend Endpoint | Status | Bemerkungen |
-|----------------|------------------|--------|-------------|
-| `uploadEmlFile()` | `POST /api/rawleads/upload` | ✅ | Übereinstimmend |
-| `getRawLead()` | `GET /api/rawleads/{id}` | ✅ | Übereinstimmend |
-| `getRawLeads()` | `GET /api/rawleads` | ✅ | Übereinstimmend |
-| `updateProcessingStatus()` | `PATCH /api/rawleads/{id}/status` | ✅ | Übereinstimmend |
-| `deleteRawLead()` | `DELETE /api/rawleads/{id}` | ✅ | Übereinstimmend |
-| `getEmails()` | `GET /api/emails` | ✅ | Übereinstimmend |
-| `getEmailById()` | `GET /api/emails/{id}` | ✅ | Übereinstimmend |
-| `downloadAttachment()` | `GET /api/emails/attachments/{attachmentId}` | ✅ | Übereinstimmend |
-| `getProjects()` | `GET /api/projects` | ✅ | Übereinstimmend |
-| `getProjectById()` | `GET /api/projects/{id}` | ✅ | Übereinstimmend |
-| `createProject()` | `POST /api/projects` | ✅ | Übereinstimmend |
-| `updateProject()` | `PUT /api/projects/{id}` | ✅ | Übereinstimmend |
-| `deleteProject()` | `DELETE /api/projects/{id}` | ✅ | Übereinstimmend |
-| `getProjectsByEmail()` | `GET /api/projects/by-email/{emailId}` | ✅ | Übereinstimmend |
-| `linkEmailToProject()` | `POST /api/projects/{projectId}/emails/{emailId}` | ❌ | Frontend verwendet anderen Pfad als Backend (`/api/projects/link-email`) |
-| `unlinkEmailFromProject()` | `DELETE /api/projects/{projectId}/emails/{emailId}` | ❌ | Frontend verwendet anderen Pfad als Backend (`/api/projects/unlink-email`) |
+#### Verwendete Endpunkte im apiService.ts
+
+| Methode | Endpoint | HTTP Method | Diskrepanz zur Backend-API |
+|---------|----------|-------------|---------------------------|
+| uploadEmlFile | `/api/rawleads/upload` | POST | ✓ Stimmt überein |
+| getRawLead | `/api/rawleads/{id}` | GET | ✓ Stimmt überein |
+| getRawLeads | `/api/rawleads` | GET | ✓ Stimmt überein |
+| updateProcessingStatus | `/api/rawleads/{id}/status` | PATCH | ✓ Stimmt überein |
+| deleteRawLead | `/api/rawleads/{id}` | DELETE | ✓ Stimmt überein |
+| getEmails | `/api/emails` | GET | ✓ Stimmt überein |
+| getEmailById | `/api/emails/{id}` | GET | ✓ Stimmt überein |
+| downloadAttachment | `/api/emails/attachments/{attachmentId}` | GET | ✓ Stimmt überein |
+| getProjects | `/api/projects` | GET | ✓ Stimmt überein |
+| getProjectById | `/api/projects/{id}` | GET | ✓ Stimmt überein |
+| createProject | `/api/projects` | POST | ✓ Stimmt überein |
+| updateProject | `/api/projects/{id}` | PUT | ✓ Stimmt überein |
+| deleteProject | `/api/projects/{id}` | DELETE | ✓ Stimmt überein |
+| getProjectsByEmail | `/api/projects/by-email/{emailId}` | GET | ✓ Stimmt überein |
+| linkEmailToProject | `/api/projects/{projectId}/emails/{emailId}` | POST | ❌ Backend: `/api/projects/link-email` (POST mit Body) |
+| unlinkEmailFromProject | `/api/projects/{projectId}/emails/{emailId}` | DELETE | ❌ Backend: `/api/projects/unlink-email` (DELETE mit Body) |
+
+**Diskrepanzen:** 
+- Frontend verwendet URL-Parameter für Projekt-Email-Verknüpfungen, Backend erwartet Request Body mit ProjectEmailLinkDto
+- Fehlende Frontend-Methode für `/api/projects/extract-from-email/{emailId}` Endpoint
 
 ### Pages
 
 | Route | Funktionalität |
 |-------|----------------|
-| `/` | Homepage mit Systemübersicht, Feature-Beschreibung und UI-Komponenten-Demo |
-| `/upload` | Upload-Seite für .eml Dateien mit Drag & Drop Funktionalität und Upload-Progress |
-| `/emails` oder `/emails/{id}` | Split-View Email-Client mit Email-Liste links und Email-Details rechts. Unterstützt direkte Navigation zu spezifischen Emails |
-| `/projects` oder `/projects/{id}` | Split-View Projekt-Management mit Projekt-Liste links und Projekt-Details rechts. Unterstützt direkte Navigation zu spezifischen Projekten |
-| `/search` | Suchseite für Projekte mit erweiterten Filteroptionen (Technologie, Standort, Status) |
-
+| `/` | Homepage mit Hero-Section, Übersicht über System-Features und Navigation zu Hauptfunktionen |
+| `/upload` | Upload-Seite für .eml Dateien mit Drag&Drop-Zone, Progress-Anzeige und Fehlermeldungen |
+| `/search` | Such-Seite für Projekte (Nach Technologie, Standort, Firma, Keywords) |
+| `/emails` oder `/emails/{id}` | Split-View für E-Mails: Liste links, Details rechts. Unterstützt URL-basierte Navigation ohne Page-Reload |
+| `/projects` oder `/projects/{id}` | Split-View für Projekte: Liste links, Details rechts. Optional Catch-All Route mit shallow routing |
