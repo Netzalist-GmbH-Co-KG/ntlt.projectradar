@@ -13,6 +13,7 @@ public class ProjectDetailsDto
     public string? Timeline { get; set; }
     public List<string> Technologies { get; set; } = new();
     public DateTime CreatedAt { get; set; }
+    public Models.ProjectStatus CurrentStatus { get; set; } // Added CurrentStatus
 }
 
 public class CreateProjectDetailsDto

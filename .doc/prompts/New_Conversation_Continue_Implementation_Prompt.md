@@ -12,7 +12,7 @@ Bevor wir weitermachen, lies Dir bitte unbedingt folgende Informationen in diese
 
 ## Aktuelle Aufgabe
 
-Wir bearbeiten gerade User Story Nummer #8 in Github. 
+Wir bearbeiten gerade User Story Nummer #15 in Github. 
 
 - Rufe das Issue aus github ab und lies es.
 

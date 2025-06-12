@@ -17,17 +17,17 @@ Das Ziel dieser User Story ist es, ein System zur Verwaltung des Status von Proj
     - Mittels `dotnet ef migrations add AddProjectStatusManagement` und `dotnet ef database update` die Änderungen in die Datenbank übernehmen.
 
 ### 2. Backend: Service-Logik für Statuswechsel
-- [ ] **Neuen Service `ProjectStatusService` erstellen (optional, alternativ Logik im Controller):**
+- [x] **Neuen Service `ProjectStatusService` erstellen (optional, alternativ Logik im Controller):**
     - In `ntlt.projectradar.backend/Services/` eine neue Datei `ProjectStatusService.cs` und `IProjectStatusService.cs` erstellen.
     - Methode implementieren, die einen Statuswechsel validiert (gemäß sequentieller Logik und Sonderfällen wie `NotInteresting`, `MissedOpportunity`).
     - Methode implementieren, die bei Statuswechsel einen Eintrag in `ProjectStatusHistory` erstellt und `CurrentStatus` in `ProjectDetails` aktualisiert.
     - Logik für initialen Status `New` bei Projekterstellung (z.B. durch `EmailProcessingBackgroundService`) implementieren, inklusive `ProjectStatusHistory`-Eintrag mit `ChangedBy = "System"` und Kommentar "Automatisch generiert".
 
 ### 3. Backend: API Endpoints anpassen und erstellen
-- [ ] **DTOs anpassen/erstellen:**
+- [x] **DTOs anpassen/erstellen:**
     - `ProjectDetailsDto` (`ntlt.projectradar.backend/DTOs/ProjectDetailsDto.cs`) um `CurrentStatus` erweitern.
     - Neues DTO `UpdateProjectStatusRequestDto.cs` in `ntlt.projectradar.backend/DTOs/` erstellen mit `NewStatus` (Enum) und `Comment` (string, optional).
-- [ ] **`ProjectsController` anpassen:**
+- [x] **`ProjectsController` anpassen:**
     - `GET /api/projects` und `GET /api/projects/{id}`: `CurrentStatus` in die Antwort aufnehmen.
     - Neuen Endpoint `PATCH /api/projects/{id}/status` erstellen:
         - Akzeptiert `UpdateProjectStatusRequestDto`.

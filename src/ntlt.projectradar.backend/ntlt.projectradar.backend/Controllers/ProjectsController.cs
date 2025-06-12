@@ -11,13 +11,16 @@ public class ProjectsController : ControllerBase
 {
     private readonly ILogger<ProjectsController> _logger;
     private readonly IProjectDetailsService _projectDetailsService;
+    private readonly IProjectStatusService _projectStatusService; // Added ProjectStatusService
 
     public ProjectsController(
         IProjectDetailsService projectDetailsService,
-        ILogger<ProjectsController> logger)
+        ILogger<ProjectsController> logger,
+        IProjectStatusService projectStatusService) // Added ProjectStatusService
     {
         _projectDetailsService = projectDetailsService;
         _logger = logger;
+        _projectStatusService = projectStatusService; // Added ProjectStatusService
     }
 
     /// <summary>
@@ -270,7 +273,8 @@ public class ProjectsController : ControllerBase
             BudgetMax = project.BudgetMax,
             Timeline = project.Timeline,
             Technologies = project.Technologies,
-            CreatedAt = project.CreatedAt
+            CreatedAt = project.CreatedAt,
+            CurrentStatus = project.CurrentStatus // Added CurrentStatus mapping
         };
     }
 
@@ -308,4 +312,56 @@ public class ProjectsController : ControllerBase
     }
 
     #endregion
+
+    /// <summary>
+    ///     Update the status of a project
+    /// </summary>
+    [HttpPatch("{id:guid}/status")]
+    public async Task<ActionResult> UpdateProjectStatus(
+        Guid id,
+        [FromBody] UpdateProjectStatusRequestDto requestDto,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            _logger.LogInformation("Updating status for project {ProjectId} to {NewStatus}", id, requestDto.NewStatus);
+
+            // For now, ChangedBy is hardcoded as per instructions
+            // In a real scenario, this would come from HttpContext.User or similar
+            var changedBy = "Tobias"; 
+
+            var success = await _projectStatusService.UpdateProjectStatusAsync(
+                id, 
+                requestDto.NewStatus, 
+                requestDto.Comment, 
+                changedBy);
+
+            if (!success)
+            {
+                // Determine if it was not found or a bad request (e.g., invalid transition, missing comment)
+                var project = await _projectDetailsService.GetProjectDetailsByIdAsync(id, cancellationToken);
+                if (project == null)
+                {
+                    return NotFound($"Project with ID {id} not found.");
+                }
+                // Check for comment requirement violation
+                if ((requestDto.NewStatus == ProjectStatus.Lost || 
+                     requestDto.NewStatus == ProjectStatus.NotInteresting || 
+                     requestDto.NewStatus == ProjectStatus.MissedOpportunity) && 
+                     string.IsNullOrWhiteSpace(requestDto.Comment))
+                {
+                    return BadRequest("Comment is required for this status change.");
+                }
+                // Otherwise, it's likely an invalid transition
+                return BadRequest("Invalid status transition or other validation error.");
+            }
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating status for project {ProjectId}", id);
+            return StatusCode(500, "An error occurred while updating the project status.");
+        }
+    }
 }
