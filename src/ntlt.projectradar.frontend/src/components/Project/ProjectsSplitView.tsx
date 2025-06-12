@@ -35,7 +35,6 @@ export default function ProjectsSplitView({ selectedProjectId, onProjectIdChange
   const breadcrumbItems = [
     { label: 'Projects', href: '/projects' }
   ];
-
   // Find and set selected project when projectId changes or projects load
   useEffect(() => {
     if (selectedProjectId && filteredProjects.length > 0) {
@@ -52,6 +51,21 @@ export default function ProjectsSplitView({ selectedProjectId, onProjectIdChange
       setSelectedProject(null);
     }
   }, [selectedProjectId, filteredProjects]); // Removed selectedProject from deps to prevent loops
+
+  // Auto-select first project if none is selected and projects are available
+  useEffect(() => {
+    if (!selectedProjectId && !selectedProject && filteredProjects.length > 0 && !projectsLoading) {
+      const firstProject = filteredProjects[0];
+      setSelectedProject(firstProject);
+      
+      // Update URL to reflect the selection
+      if (onProjectIdChange) {
+        setTimeout(() => {
+          onProjectIdChange(firstProject.id);
+        }, 0);
+      }
+    }
+  }, [selectedProjectId, selectedProject, filteredProjects, projectsLoading, onProjectIdChange]);
 
   // Handle project selection with smooth transitions
   const handleProjectSelect = (project: Project) => {
@@ -118,10 +132,9 @@ export default function ProjectsSplitView({ selectedProjectId, onProjectIdChange
               <div className="p-4 bg-red-50 border-b border-red-200 flex-shrink-0">
                 <p className="text-sm text-red-600">{projectsError}</p>
               </div>
-            )}
-              <ProjectList
+            )}            <ProjectList
               projects={filteredProjects}
-              selectedProjectId={selectedProjectId}
+              selectedProjectId={selectedProject?.id}
               onProjectSelect={handleProjectSelect}
               isLoading={projectsLoading}
             />

@@ -45,8 +45,7 @@ export default function EmailsSplitView({ selectedEmailId, onEmailIdChange }: Em
 
   const breadcrumbItems = [
     { label: 'Emails', href: '/emails' }
-  ];
-  // Find and set selected email when emailId changes or emails load
+  ];  // Find and set selected email when emailId changes or emails load
   useEffect(() => {
     if (selectedEmailId && emails.length > 0) {
       const email = emails.find(e => e.id === selectedEmailId);
@@ -61,7 +60,22 @@ export default function EmailsSplitView({ selectedEmailId, onEmailIdChange }: Em
     } else if (!selectedEmailId && selectedEmail) {
       setSelectedEmail(null);
     }
-  }, [selectedEmailId, emails]); // Removed selectedEmail from deps to prevent loops  // Handle email selection with smooth transitions
+  }, [selectedEmailId, emails]); // Removed selectedEmail from deps to prevent loops
+
+  // Auto-select first email if none is selected and emails are available
+  useEffect(() => {
+    if (!selectedEmailId && !selectedEmail && emails.length > 0 && !emailsLoading) {
+      const firstEmail = emails[0];
+      setSelectedEmail(firstEmail);
+      
+      // Update URL to reflect the selection
+      if (onEmailIdChange) {
+        setTimeout(() => {
+          onEmailIdChange(firstEmail.id);
+        }, 0);
+      }
+    }
+  }, [selectedEmailId, selectedEmail, emails, emailsLoading, onEmailIdChange]);// Handle email selection with smooth transitions
   const handleEmailSelect = (email: EmailListDto) => {
     // Optimistic update: set email immediately for smooth UX
     setSelectedEmail(email);

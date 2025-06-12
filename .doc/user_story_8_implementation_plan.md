@@ -80,22 +80,9 @@ Implementierung einer vollständigen Projekt-Verwaltung mit echten Backend-Daten
 - [x] Responsive Verhalten (Mobile: Stack)
 
 ### 10. Anpassen der Email Liste als Splitview / catchall
-- [ ] Die Email route app/emails soll exakt analog zur projekte route app/projects/[[...id]] umgebaut werden.
-- [ ] Dies ermöglicht einer direkte Navigation zu einer spezifischen Email und Browser Navigation
-- [ ] Layout und Verhalten soll analog zu /app/projects sein (z.B. ist der Content Container bei Projekten "top" aligned und bei emails "vertical centered")
-
-### 11. Routes & Navigation Update
-- [ ] `src/app/projects/page.tsx` löschen (ersetzt durch [[...id]])
-- [ ] `src/app/projects/[id]/page.tsx` löschen (ersetzt durch [[...id]])
-- [ ] Navigation Links in Header/Sidebar anpassen
-- [ ] Breadcrumb Updates für neue Routen-Struktur
-
-### 12. Testing & Refinement
-- [ ] Integration Testing mit echten Backend-Daten
-- [ ] Error Handling für alle Edge Cases
-- [ ] Loading States und UX Optimierung
-- [ ] Mobile Responsive Tests
-- [ ] Performance Optimierung (Memo, Callbacks)
+- [x] Die Email route app/emails soll exakt analog zur projekte route app/projects/[[...id]] umgebaut werden.
+- [x] Dies ermöglicht einer direkte Navigation zu einer spezifischen Email und Browser Navigation
+- [x] Layout und Verhalten soll analog zu /app/projects sein (z.B. ist der Content Container bei Projekten "top" aligned und bei emails "vertical centered")
 
 ## Technische Details
 
