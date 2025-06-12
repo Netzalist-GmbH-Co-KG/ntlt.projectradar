@@ -31,6 +31,15 @@ export function ProjectDetails({
 }: ProjectDetailsProps) {
   // Edit mode state
   const [isEditing, setIsEditing] = useState(false);
+  const [previousProject, setPreviousProject] = useState<Project | null>(null);
+
+  // Keep track of previous project details to prevent layout shifts during loading
+  const displayProject = project || (isLoading && previousProject ? previousProject : null);
+  
+  // Update previous project when we get new data
+  if (project && (!previousProject || previousProject.id !== project.id)) {
+    setPreviousProject(project);
+  }
 
   // Handle edit toggle
   const handleEditToggle = () => {
@@ -38,9 +47,9 @@ export function ProjectDetails({
   };
   // Handle save from edit component
   const handleSave = async (data: ProjectUpdateFormData): Promise<boolean> => {
-    if (!project || !onUpdateProject) return false;
+    if (!displayProject || !onUpdateProject) return false;
     
-    const success = await onUpdateProject(project.id, data);
+    const success = await onUpdateProject(displayProject.id, data);
     if (success) {
       setIsEditing(false); // Close edit mode on successful save
     }
@@ -52,18 +61,20 @@ export function ProjectDetails({
     setIsEditing(false);
   };
 
-  // Loading state
-  if (isLoading) {
-    return <ProjectDetailStates type="loading" className={className} />;
+  // Handle different states with layout stability
+  if (!project && !displayProject) {
+    return <ProjectDetailStates type="no-selection" className={className} />;
   }
 
-  // Error state
-  if (error) {
+  if (error && !displayProject) {
     return <ProjectDetailStates type="error" error={error} className={className} />;
   }
 
-  // No project selected state
-  if (!project) {
+  if (!displayProject && isLoading) {
+    return <ProjectDetailStates type="loading" className={className} />;
+  }
+
+  if (!displayProject) {
     return <ProjectDetailStates type="no-selection" className={className} />;
   }
 
@@ -71,7 +82,7 @@ export function ProjectDetails({
   if (isEditing) {
     return (
       <ProjectDetailsEdit
-        project={project}
+        project={displayProject}
         onSave={handleSave}
         onCancel={handleCancel}
         className={className}
@@ -80,10 +91,17 @@ export function ProjectDetails({
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-neutral-200 ${className}`}>
+    <div className={`bg-white rounded-lg shadow-sm border border-neutral-200 relative ${className}`}>
+      {/* Show loading overlay if loading new project but keep previous content */}
+      {isLoading && project !== displayProject && (
+        <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        </div>
+      )}
+
       {/* Header with Edit Button */}
       <ProjectDetailHeader 
-        project={project}
+        project={displayProject}
         showEditButton={!!onUpdateProject}
         onEdit={handleEditToggle}
       />
@@ -91,16 +109,16 @@ export function ProjectDetails({
       {/* Content */}
       <div className="p-6 space-y-6">
         {/* Description */}
-        <ProjectDetailDescription description={project.description} />
+        <ProjectDetailDescription description={displayProject.description} />
 
         {/* Project Details Grid */}
-        <ProjectDetailInfoGrid project={project} />
+        <ProjectDetailInfoGrid project={displayProject} />
 
         {/* Technologies */}
-        <ProjectDetailTechnologies technologies={project.technologies || []} />
+        <ProjectDetailTechnologies technologies={displayProject.technologies || []} />
 
         {/* Metadata */}
-        <ProjectDetailMetadata project={project} />
+        <ProjectDetailMetadata project={displayProject} />
       </div>
     </div>
   );

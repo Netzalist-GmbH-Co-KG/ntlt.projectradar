@@ -5,8 +5,10 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useProjects, useProjectDetail } from '../../hooks/useProjects';
-import { ProjectUpdateFormData } from '../../types/project';
+import { Project, ProjectUpdateFormData } from '../../types/project';
 import { Breadcrumb } from '../Navigation/Breadcrumb';
 import ProjectList from './ProjectList';
 import { ProjectDetails } from './ProjectDetails';
@@ -15,12 +17,16 @@ import ResizableSplit from '../Layout/ResizableSplit';
 
 interface ProjectsSplitViewProps {
   selectedProjectId?: string;
+  onProjectIdChange?: (projectId: string | undefined) => void;
 }
 
-export default function ProjectsSplitView({ selectedProjectId }: ProjectsSplitViewProps) {
+export default function ProjectsSplitView({ selectedProjectId, onProjectIdChange }: ProjectsSplitViewProps) {
+  const router = useRouter();
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  
   const { filteredProjects, isLoading: projectsLoading, error: projectsError, updateProject } = useProjects();
   const { 
-    project: selectedProject, 
+    project: projectDetails, 
     isLoading: projectLoading, 
     error: projectError,
     saveProject 
@@ -29,6 +35,41 @@ export default function ProjectsSplitView({ selectedProjectId }: ProjectsSplitVi
   const breadcrumbItems = [
     { label: 'Projects', href: '/projects' }
   ];
+
+  // Find and set selected project when projectId changes or projects load
+  useEffect(() => {
+    if (selectedProjectId && filteredProjects.length > 0) {
+      const project = filteredProjects.find(p => p.id === selectedProjectId);
+      if (project && (!selectedProject || selectedProject.id !== project.id)) {
+        // Only update if we found a different project
+        setSelectedProject(project);
+      } else if (!project && (!selectedProject || selectedProject.id !== selectedProjectId)) {
+        // Project not found in current list, but we still want to show it's selected
+        // The ProjectDetails component will handle the loading/error states
+        setSelectedProject({ id: selectedProjectId } as Project);
+      }
+    } else if (!selectedProjectId && selectedProject) {
+      setSelectedProject(null);
+    }
+  }, [selectedProjectId, filteredProjects]); // Removed selectedProject from deps to prevent loops
+
+  // Handle project selection with smooth transitions
+  const handleProjectSelect = (project: Project) => {
+    // Optimistic update: set project immediately for smooth UX
+    setSelectedProject(project);
+    
+    // Notify parent component to update URL without page reload
+    if (onProjectIdChange) {
+      // Use setTimeout to ensure state update happens first
+      setTimeout(() => {
+        onProjectIdChange(project.id);
+      }, 0);
+    } else {
+      // Fallback: use Next.js router if no callback provided
+      router.push(`/projects/${project.id}`, { scroll: false });
+    }
+  };
+
   // Handle project update with optimistic UI
   const handleUpdateProject = async (id: string, data: ProjectUpdateFormData): Promise<boolean> => {
     try {
@@ -42,7 +83,7 @@ export default function ProjectsSplitView({ selectedProjectId }: ProjectsSplitVi
       console.error('Failed to update project:', error);
       return false;
     }
-  };  return (
+  };return (
     <div className="h-full flex flex-col bg-neutral-50" style={{ height: 'calc(100vh - 4rem - 3rem)' }}>
       {/* Header */}
       <div className="bg-white border-b border-neutral-200 px-6 py-4 flex-shrink-0">
@@ -78,36 +119,22 @@ export default function ProjectsSplitView({ selectedProjectId }: ProjectsSplitVi
                 <p className="text-sm text-red-600">{projectsError}</p>
               </div>
             )}
-            
-            <ProjectList
+              <ProjectList
               projects={filteredProjects}
               selectedProjectId={selectedProjectId}
+              onProjectSelect={handleProjectSelect}
               isLoading={projectsLoading}
             />
           </div>
 
           {/* Project Details - Right Panel */}
           <div className="bg-white flex flex-col h-full">
-            {projectError && (
-              <div className="p-4 bg-red-50 border-b border-red-200 flex-shrink-0">
-                <p className="text-sm text-red-600">{projectError}</p>
-              </div>
-            )}
-            
-            <div className="flex-1 p-6">
-              {projectLoading ? (
-                <ProjectDetailStates type="loading" />
-              ) : projectError ? (
-                <ProjectDetailStates type="error" error={projectError} />
-              ) : selectedProject ? (
-                <ProjectDetails
-                  project={selectedProject}
-                  onUpdateProject={handleUpdateProject}
-                />
-              ) : (
-                <ProjectDetailStates type="no-selection" />
-              )}
-            </div>
+            <ProjectDetails
+              project={selectedProject}
+              isLoading={projectLoading}
+              error={projectError}
+              onUpdateProject={handleUpdateProject}
+            />
           </div>
         </ResizableSplit>
       </div>

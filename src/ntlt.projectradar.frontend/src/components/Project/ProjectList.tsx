@@ -12,12 +12,14 @@ import { LoadingCard } from '../Loading/LoadingComponents';
 interface ProjectListProps {
   projects: Project[];
   selectedProjectId?: string;
+  onProjectSelect?: (project: Project) => void;
   isLoading: boolean;
 }
 
 export default function ProjectList({ 
   projects, 
   selectedProjectId, 
+  onProjectSelect,
   isLoading 
 }: ProjectListProps) {
   const router = useRouter();
@@ -35,8 +37,14 @@ export default function ProjectList({
     return timeline || 'Not specified';
   };
 
-  const handleProjectSelect = (projectId: string) => {
-    router.push(`/projects/${projectId}`);
+  const handleProjectSelect = (project: Project) => {
+    if (onProjectSelect) {
+      // Use callback for smooth navigation
+      onProjectSelect(project);
+    } else {
+      // Fallback: use Next.js router if no callback provided
+      router.push(`/projects/${project.id}`);
+    }
   };
 
   if (isLoading && projects.length === 0) {
@@ -72,11 +80,10 @@ export default function ProjectList({
   return (
     <div className="flex flex-col h-full">
       {/* Project List */}
-      <div className="flex-1 overflow-y-auto">
-        {projects.map((project) => (
+      <div className="flex-1 overflow-y-auto">        {projects.map((project) => (
           <div
             key={project.id}
-            onClick={() => handleProjectSelect(project.id)}
+            onClick={() => handleProjectSelect(project)}
             className={`
               border-b border-neutral-200 p-4 cursor-pointer hover:bg-neutral-50 transition-colors
               ${selectedProjectId === project.id ? 'bg-blue-50 border-blue-200' : ''}

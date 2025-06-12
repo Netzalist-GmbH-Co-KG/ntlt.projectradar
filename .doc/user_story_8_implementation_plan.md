@@ -73,19 +73,16 @@ Implementierung einer vollständigen Projekt-Verwaltung mit echten Backend-Daten
 
 ### 9. Neue Project Split-View Seite
 **Datei:** `src/app/projects/[[...id]]/page.tsx` (neu)
-- [ ] Optional Catch-All Route für `/projects` und `/projects/{id}`
-- [ ] Split Layout: Liste links (1/3), Details rechts (2/3)
-- [ ] ProjectList Komponente (ohne Overlay, wie EmailList)
-- [ ] Selected State Management über URL Parameter id
-- [ ] Responsive Verhalten (Mobile: Stack)
+- [x] Optional Catch-All Route für `/projects` und `/projects/{id}`
+- [x] Split Layout: Liste links (1/3), Details rechts (2/3)
+- [x] ProjectList Komponente (ohne Overlay, wie EmailList)
+- [x] Selected State Management über URL Parameter id
+- [x] Responsive Verhalten (Mobile: Stack)
 
-### 10. ProjectList Komponente
-**Datei:** `src/components/Project/ProjectList.tsx` (neu)
-- [ ] Kompakte Liste aller Projekte
-- [ ] Ähnlich EmailList, aber ohne Pagination
-- [ ] Selektion über Props (selectedProjectId)
-- [ ] Click Handler für Projekt-Auswahl
-- [ ] Search/Filter Integration (später)
+### 10. Anpassen der Email Liste als Splitview / catchall
+- [ ] Die Email route app/emails soll exakt analog zur projekte route app/projects/[[...id]] umgebaut werden.
+- [ ] Dies ermöglicht einer direkte Navigation zu einer spezifischen Email und Browser Navigation
+- [ ] Layout und Verhalten soll analog zu /app/projects sein (z.B. ist der Content Container bei Projekten "top" aligned und bei emails "vertical centered")
 
 ### 11. Routes & Navigation Update
 - [ ] `src/app/projects/page.tsx` löschen (ersetzt durch [[...id]])
