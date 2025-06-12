@@ -6,14 +6,14 @@ Das Ziel dieser User Story ist es, ein System zur Verwaltung des Status von Proj
 ## Implementation Steps
 
 ### 1. Backend: Datenmodell erweitern
-- [ ] **Entität `ProjectDetails` anpassen:**
+- [x] **Entität `ProjectDetails` anpassen:**
     - Feld `CurrentStatus` (Enum: `New`, `InterestingCold`, `InterestingContacted`, `InterestingInProgress`, `NotInteresting`, `Won`, `Lost`, `MissedOpportunity`) in `ntlt.projectradar.backend/Models/ProjectDetails.cs` hinzufügen.
-- [ ] **Neue Entität `ProjectStatusHistory` erstellen:**
+- [x] **Neue Entität `ProjectStatusHistory` erstellen:**
     - In `ntlt.projectradar.backend/Models/` eine neue Datei `ProjectStatusHistory.cs` erstellen mit den Feldern: `Id` (Guid), `ProjectId` (Guid), `Status` (Enum, derselbe Typ wie `CurrentStatus`), `Timestamp` (DateTime), `Comment` (string, optional), `ChangedBy` (string).
-- [ ] **Datenbankkontext `ProjectRadarContext` aktualisieren:**
+- [x] **Datenbankkontext `ProjectRadarContext` aktualisieren:**
     - `DbSet<ProjectStatusHistory>` in `ntlt.projectradar.backend/Data/ProjectRadarContext.cs` hinzufügen.
     - Beziehung zwischen `ProjectDetails` und `ProjectStatusHistory` konfigurieren.
-- [ ] **Datenbankmigration erstellen und anwenden:**
+- [x] **Datenbankmigration erstellen und anwenden:**
     - Mittels `dotnet ef migrations add AddProjectStatusManagement` und `dotnet ef database update` die Änderungen in die Datenbank übernehmen.
 
 ### 2. Backend: Service-Logik für Statuswechsel

@@ -15,6 +15,7 @@ public class ProjectRadarContext : DbContext
     public DbSet<EmailAttachment> EmailAttachments { get; set; } = null!;
     public DbSet<ProjectDetails> ProjectDetails { get; set; } = null!;
     public DbSet<ProjectEmails> ProjectEmails { get; set; } = null!;
+    public DbSet<ProjectStatusHistory> ProjectStatusHistories { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -138,6 +139,32 @@ public class ProjectRadarContext : DbContext
 
             entity.Property(e => e.EmailId)
                 .IsRequired();
+        });
+
+        // Configure ProjectStatusHistory entity
+        modelBuilder.Entity<ProjectStatusHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            entity.Property(e => e.ProjectId)
+                .IsRequired();
+
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasConversion<string>(); // Store enum as string
+
+            entity.Property(e => e.Timestamp)
+                .IsRequired();
+
+            entity.Property(e => e.Comment)
+                .HasMaxLength(2000); // Allow for longer comments
+
+            entity.Property(e => e.ChangedBy)
+                .IsRequired()
+                .HasMaxLength(256); // Standard length for usernames/system identifiers
         });
     }
 }

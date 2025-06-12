@@ -15,4 +15,5 @@ public class ProjectDetails
     public string? Timeline { get; set; }
     public List<string> Technologies { get; set; } = new();
     [Required] public DateTime CreatedAt { get; set; }
+    public ProjectStatus CurrentStatus { get; set; }
 }

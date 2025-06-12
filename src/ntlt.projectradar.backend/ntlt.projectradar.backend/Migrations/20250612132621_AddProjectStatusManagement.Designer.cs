@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ntlt.projectradar.backend.Data;
 
@@ -10,9 +11,11 @@ using ntlt.projectradar.backend.Data;
 namespace ntlt.projectradar.backend.Migrations
 {
     [DbContext(typeof(ProjectRadarContext))]
-    partial class ProjectRadarContextModelSnapshot : ModelSnapshot
+    [Migration("20250612132621_AddProjectStatusManagement")]
+    partial class AddProjectStatusManagement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
