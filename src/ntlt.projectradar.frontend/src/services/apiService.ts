@@ -269,11 +269,10 @@ class ApiService {
       body: JSON.stringify(project),
     });
   }
-
   async updateProjectStatus(projectId: string, newStatus: ProjectStatus, comment?: string): Promise<void> {
-    const payload: { newStatus: ProjectStatus; comment?: string } = { newStatus };
+    const payload: { NewStatus: ProjectStatus; Comment?: string } = { NewStatus: newStatus };
     if (comment) {
-      payload.comment = comment;
+      payload.Comment = comment;
     }
     await this.fetchWithErrorHandling<void>(`${API_BASE_URL}/api/projects/${projectId}/status`, {
       method: 'PATCH',

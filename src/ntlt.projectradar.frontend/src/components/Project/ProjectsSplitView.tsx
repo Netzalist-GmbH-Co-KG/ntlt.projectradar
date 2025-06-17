@@ -24,7 +24,7 @@ export default function ProjectsSplitView({ selectedProjectId, onProjectIdChange
   const router = useRouter();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   
-  const { filteredProjects, isLoading: projectsLoading, error: projectsError, updateProject } = useProjects();
+  const { filteredProjects, isLoading: projectsLoading, error: projectsError, updateProject, updateProjectStatus } = useProjects();
   const { 
     project: projectDetails, 
     isLoading: projectLoading, 
@@ -83,7 +83,6 @@ export default function ProjectsSplitView({ selectedProjectId, onProjectIdChange
       router.push(`/projects/${project.id}`, { scroll: false });
     }
   };
-
   // Handle project update with optimistic UI
   const handleUpdateProject = async (id: string, data: ProjectUpdateFormData): Promise<boolean> => {
     try {
@@ -97,6 +96,14 @@ export default function ProjectsSplitView({ selectedProjectId, onProjectIdChange
       console.error('Failed to update project:', error);
       return false;
     }
+  };
+  // Handle project status update
+  const handleProjectStatusUpdate = (updatedProject: Project) => {
+    // Update the selected project immediately for UI responsiveness
+    setSelectedProject(updatedProject);
+    
+    // Also update the project in the main list using the hook function
+    updateProjectStatus(updatedProject);
   };return (
     <div className="h-full flex flex-col bg-neutral-50" style={{ height: 'calc(100vh - 4rem - 3rem)' }}>
       {/* Header */}
@@ -136,8 +143,7 @@ export default function ProjectsSplitView({ selectedProjectId, onProjectIdChange
               projects={filteredProjects}
               selectedProjectId={selectedProject?.id}
               onProjectSelect={handleProjectSelect}
-              isLoading={projectsLoading}
-            />
+              isLoading={projectsLoading}            />
           </div>
 
           {/* Project Details - Right Panel */}
@@ -147,6 +153,7 @@ export default function ProjectsSplitView({ selectedProjectId, onProjectIdChange
               isLoading={projectLoading}
               error={projectError}
               onUpdateProject={handleUpdateProject}
+              onProjectStatusUpdate={handleProjectStatusUpdate}
             />
           </div>
         </ResizableSplit>

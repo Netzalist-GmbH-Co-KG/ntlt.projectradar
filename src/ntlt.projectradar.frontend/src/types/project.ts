@@ -313,3 +313,130 @@ export enum ProjectStatus {
   Lost = 'Lost',
   MissedOpportunity = 'MissedOpportunity',
 }
+
+/**
+ * Utility functions for project status management
+ */
+export const ProjectStatusUtils = {
+  /**
+   * Get all available status transitions from the current status
+   */
+  getAvailableStatusTransitions(currentStatus: ProjectStatus): ProjectStatus[] {
+    const availableStatuses: ProjectStatus[] = [];
+
+    // Same status is always allowed (no change)
+    availableStatuses.push(currentStatus);
+
+    // Direct to NotInteresting or MissedOpportunity from any 'Interesting' state or 'New'
+    if (currentStatus === ProjectStatus.New ||
+        currentStatus === ProjectStatus.InterestingCold ||
+        currentStatus === ProjectStatus.InterestingContacted ||
+        currentStatus === ProjectStatus.InterestingInProgress) {
+      availableStatuses.push(ProjectStatus.NotInteresting, ProjectStatus.MissedOpportunity);
+    }
+
+    // From NotInteresting or MissedOpportunity back to an 'Interesting' state or 'New'
+    if (currentStatus === ProjectStatus.NotInteresting || currentStatus === ProjectStatus.MissedOpportunity) {
+      availableStatuses.push(
+        ProjectStatus.New,
+        ProjectStatus.InterestingCold,
+        ProjectStatus.InterestingContacted,
+        ProjectStatus.InterestingInProgress
+      );
+    }
+
+    // Sequential "Interesting" flow
+    const sequentialPath = [
+      ProjectStatus.New,
+      ProjectStatus.InterestingCold,
+      ProjectStatus.InterestingContacted,
+      ProjectStatus.InterestingInProgress
+    ];
+
+    const currentIndex = sequentialPath.indexOf(currentStatus);
+    if (currentIndex !== -1) {
+      // Allow one step forward
+      if (currentIndex < sequentialPath.length - 1) {
+        availableStatuses.push(sequentialPath[currentIndex + 1]);
+      }
+      // Allow one step backward
+      if (currentIndex > 0) {
+        availableStatuses.push(sequentialPath[currentIndex - 1]);
+      }
+    }
+
+    // From InterestingInProgress to Won or Lost
+    if (currentStatus === ProjectStatus.InterestingInProgress) {
+      availableStatuses.push(ProjectStatus.Won, ProjectStatus.Lost);
+    }
+
+    // From Won/Lost back to InterestingInProgress (correction)
+    if (currentStatus === ProjectStatus.Won || currentStatus === ProjectStatus.Lost) {
+      availableStatuses.push(ProjectStatus.InterestingInProgress);
+    }
+
+    // Remove duplicates and return
+    return Array.from(new Set(availableStatuses));
+  },
+
+  /**
+   * Check if a comment is required for the given status
+   */
+  isCommentRequired(status: ProjectStatus): boolean {
+    return status === ProjectStatus.Lost ||
+           status === ProjectStatus.NotInteresting ||
+           status === ProjectStatus.MissedOpportunity;
+  },
+
+  /**
+   * Get German display text for status
+   */
+  getStatusDisplayText(status: ProjectStatus): string {
+    switch (status) {
+      case ProjectStatus.New:
+        return 'Neu';
+      case ProjectStatus.InterestingCold:
+        return 'Kaltakquise';
+      case ProjectStatus.InterestingContacted:
+        return 'Kontaktiert';
+      case ProjectStatus.InterestingInProgress:
+        return 'In Bearbeitung';
+      case ProjectStatus.Won:
+        return 'Gewonnen';
+      case ProjectStatus.Lost:
+        return 'Verloren';
+      case ProjectStatus.NotInteresting:
+        return 'Nicht Interessant';
+      case ProjectStatus.MissedOpportunity:
+        return 'Verpasst';
+      default:
+        return status;
+    }
+  },
+
+  /**
+   * Get color classes for status badge
+   */
+  getStatusColorClasses(status: ProjectStatus): string {
+    switch (status) {
+      case ProjectStatus.New:
+        return 'bg-blue-500 text-white border-blue-500';
+      case ProjectStatus.InterestingCold:
+        return 'bg-sky-500 text-white border-sky-500';
+      case ProjectStatus.InterestingContacted:
+        return 'bg-yellow-500 text-black border-yellow-500';
+      case ProjectStatus.InterestingInProgress:
+        return 'bg-orange-500 text-white border-orange-500';
+      case ProjectStatus.Won:
+        return 'bg-green-500 text-white border-green-500';
+      case ProjectStatus.Lost:
+        return 'bg-red-500 text-white border-red-500';
+      case ProjectStatus.NotInteresting:
+        return 'bg-gray-500 text-white border-gray-500';
+      case ProjectStatus.MissedOpportunity:
+        return 'bg-gray-500 text-white border-gray-500';
+      default:
+        return 'bg-gray-300 text-black border-gray-300';
+    }
+  }
+};

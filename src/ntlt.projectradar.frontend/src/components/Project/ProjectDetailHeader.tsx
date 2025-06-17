@@ -12,12 +12,14 @@ interface ProjectDetailHeaderProps {
   project: Project;
   showEditButton?: boolean;
   onEdit?: () => void;
+  onStatusClick?: () => void;
 }
 
 export default function ProjectDetailHeader({ 
   project, 
   showEditButton = false, 
-  onEdit 
+  onEdit,
+  onStatusClick
 }: ProjectDetailHeaderProps) {
   return (
     <div className="px-6 py-4 border-b border-neutral-200 flex items-start justify-between">
@@ -41,7 +43,7 @@ export default function ProjectDetailHeader({
       {/* Right Part: Status Badge and Edit Button */}
       <div className="ml-4 flex flex-col items-end">
         {project.currentStatus && (
-          <div className="mb-1"> {/* Add margin below badge */}
+          <div className="mb-1 cursor-pointer" onClick={onStatusClick}>
             <ProjectStatusBadge status={project.currentStatus} />
           </div>
         )}

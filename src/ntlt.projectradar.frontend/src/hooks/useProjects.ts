@@ -105,6 +105,14 @@ export function useProjects() {
     }
   }, []);
 
+  // Update project status only (for status changes)
+  const updateProjectStatus = useCallback((updatedProject: Project) => {
+    setState(prev => ({
+      ...prev,
+      projects: prev.projects.map(p => p.id === updatedProject.id ? updatedProject : p),
+    }));
+  }, []);
+
   // Delete a project
   const deleteProject = useCallback(async (id: string): Promise<boolean> => {
     try {
@@ -251,7 +259,6 @@ export function useProjects() {
 
     return filtered;
   }, [state.projects, state.filters, state.sortConfig]);
-
   return {
     // State
     ...state,
@@ -261,6 +268,7 @@ export function useProjects() {
     loadProjects,
     createProject,
     updateProject,
+    updateProjectStatus,
     deleteProject,
     selectProject,
     setViewMode,
